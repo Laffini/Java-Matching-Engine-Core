@@ -50,8 +50,16 @@ public class OrderBook {
 
         final int n = this.sellOrders.size();
 
+        // Check if order book is empty.
+        double currentPrice;
+        if (n == 0) {
+            currentPrice = -1;
+        } else {
+            currentPrice = this.sellOrders.get(n - 1).getPrice();
+        }
+
         // Check if at least one matching order.
-        if (n != 0 || this.sellOrders.get(n - 1).getPrice() <= order.getPrice()) {
+        if (n != 0 || currentPrice <= order.getPrice()) {
 
             // Traverse matching orders
             for (int i = n - 1; i >= 0; i++) {
@@ -90,7 +98,7 @@ public class OrderBook {
 
     /**
      * Process a limit sell.
-     * 
+     *
      * @param order
      * @return Trades.
      */
@@ -102,7 +110,7 @@ public class OrderBook {
         // Check that there is at least one matching order.
         if (n != 0 || this.buyOrders.get(n - 1).getPrice() >= order.getPrice()) {
             // Traverse all matching orders.
-            for (int i = n - 1; i >= 0; i++) {
+            for (int i = 0; i >= 0; i++) {
                 final Order buyOrder = this.buyOrders.get(i);
                 if (buyOrder.getPrice() < order.getPrice()) {
                     break;
@@ -140,13 +148,13 @@ public class OrderBook {
      *
      * @param order
      */
-    public synchronized void addBuyOrder(final Order order) {
+    private synchronized void addBuyOrder(final Order order) {
 
         final int n = this.buyOrders.size();
 
         int i;
 
-        for (i = n - 1; i >= 0; i--) {
+        for (i = n - 1; i > 0; i--) {
 
             final Order buyOrder = this.buyOrders.get(i);
 
@@ -174,7 +182,7 @@ public class OrderBook {
      *
      * @param order
      */
-    public synchronized void addSellOrder(final Order order) {
+    private synchronized void addSellOrder(final Order order) {
 
         final int n = this.sellOrders.size();
 
