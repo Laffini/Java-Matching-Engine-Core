@@ -1,6 +1,7 @@
 package engine;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author Laffini
@@ -45,53 +46,52 @@ public class OrderBook {
      * @param order
      * @return Trades.
      */
-    public synchronized ArrayList<Trade> processLimitBuy(final Order order) {
+    private synchronized ArrayList<Trade> processLimitBuy(final Order order) {
         final ArrayList<Trade> trades = new ArrayList<Trade>();
 
         final int n = this.sellOrders.size();
 
         // Check if order book is empty.
-        double currentPrice;
-        if (n == 0) {
-            currentPrice = -1;
-        } else {
-            currentPrice = this.sellOrders.get(n - 1).getPrice();
-        }
 
-        // Check if at least one matching order.
-        if (n != 0 || currentPrice <= order.getPrice()) {
+        if (n != 0) {
+            // Check if at least one matching order.
+            if (this.sellOrders.get(n - 1).getPrice() <= order.getPrice()) {
 
-            // Traverse matching orders
-            for (int i = n - 1; i >= 0; i++) {
-                final Order sellOrder = this.sellOrders.get(i);
-                if (sellOrder.getPrice() > order.getPrice()) {
-                    break;
-                }
-                // Fill entire order.
-                if (sellOrder.getAmount() >= order.getAmount()) {
-                    trades.add(new Trade(order.getId(), sellOrder.getId(), order.getAmount(), sellOrder.getPrice()));
-                    sellOrder.setAmount(sellOrder.getAmount() - order.getAmount());
-                    if (sellOrder.getAmount() == 0) {
-                        this.removeSellOrder(i);
+                // Traverse matching orders
+                while (true) {
+                    final Order sellOrder = this.sellOrders.get(0);
+                    if (sellOrder.getPrice() > order.getPrice()) {
+                        break;
                     }
-                    return trades;
-                }
+                    // Fill entire order.
+                    if (sellOrder.getAmount() >= order.getAmount()) {
+                        trades.add(
+                                new Trade(order.getId(), sellOrder.getId(), order.getAmount(), sellOrder.getPrice()));
+                        sellOrder.setAmount(sellOrder.getAmount() - order.getAmount());
+                        if (sellOrder.getAmount() == 0) {
+                            this.removeSellOrder(0);
+                        }
+                        return trades;
+                    }
 
-                // Fill partial order & continue.
-                if (sellOrder.getAmount() < order.getAmount()) {
-                    trades.add(
-                            new Trade(order.getId(), sellOrder.getId(), sellOrder.getAmount(), sellOrder.getPrice()));
-                    order.setAmount(order.getAmount() - sellOrder.getAmount());
-                    this.removeSellOrder(i);
-                    continue;
+                    // Fill partial order & continue.
+                    if (sellOrder.getAmount() < order.getAmount()) {
+                        trades.add(new Trade(order.getId(), sellOrder.getId(), sellOrder.getAmount(),
+                                sellOrder.getPrice()));
+                        order.setAmount(order.getAmount() - sellOrder.getAmount());
+                        this.removeSellOrder(0);
+                        continue;
+                    }
+
                 }
 
             }
-
         }
 
         // Add remaining order to book.
-        this.addBuyOrder(order);
+        this.buyOrders.add(order);
+
+        Collections.sort(this.buyOrders);
 
         return trades;
     }
@@ -102,19 +102,28 @@ public class OrderBook {
      * @param order
      * @return Trades.
      */
-    public synchronized ArrayList<Trade> processLimitSell(final Order order) {
+    private synchronized ArrayList<Trade> processLimitSell(final Order order) {
+
         final ArrayList<Trade> trades = new ArrayList<Trade>();
 
         final int n = this.buyOrders.size();
 
+        // Check if order book is empty.
+        double currentPrice;
+        if (n == 0) {
+            currentPrice = -1;
+        } else {
+            currentPrice = this.buyOrders.get(n - 1).getPrice();
+        }
+
         // Check that there is at least one matching order.
-        if (n != 0 || this.buyOrders.get(n - 1).getPrice() >= order.getPrice()) {
+        if (n != 0 || currentPrice >= order.getPrice()) {
             // Traverse all matching orders.
             for (int i = 0; i >= 0; i++) {
                 final Order buyOrder = this.buyOrders.get(i);
-                if (buyOrder.getPrice() < order.getPrice()) {
-                    break;
-                }
+                /*
+                 * if (buyOrder.getPrice() < order.getPrice()) { break; }
+                 */
 
                 // Fill entire order.
                 if (buyOrder.getAmount() >= order.getAmount()) {
@@ -138,74 +147,30 @@ public class OrderBook {
 
         }
         // Add remaining order to the list.
-        this.addSellOrder(order);
+        this.sellOrders.add(order);
+
+        Collections.sort(this.sellOrders);
+
         return trades;
 
     }
 
     /**
-     * Add a buy order to the order book.
+     * Calculate the spread.
      *
-     * @param order
+     * @return Difference in buy and sell books.
      */
-    private synchronized void addBuyOrder(final Order order) {
+    public double getSpread() {
 
-        final int n = this.buyOrders.size();
+        if (this.buyOrders.size() != 0 && this.sellOrders.size() != 0) {
+            final double buyOrderPrice = this.buyOrders.get(this.buyOrders.size() - 1).getPrice();
 
-        int i;
+            final double sellOrderPrice = this.sellOrders.get(0).getPrice();
 
-        for (i = n - 1; i > 0; i--) {
-
-            final Order buyOrder = this.buyOrders.get(i);
-
-            if (buyOrder.getPrice() < order.getPrice()) {
-                break;
-            }
-
-        }
-        if (i == n - 1) {
-            this.buyOrders.add(order);
-        } else {
-
-            final Order current = this.buyOrders.get(i);
-
-            this.buyOrders.set(i + 1, current);
-
-            this.buyOrders.set(i, order);
-
+            return sellOrderPrice - buyOrderPrice;
         }
 
-    }
-
-    /**
-     * Add a sell order to the order book.
-     *
-     * @param order
-     */
-    private synchronized void addSellOrder(final Order order) {
-
-        final int n = this.sellOrders.size();
-
-        int i;
-
-        for (i = n - 1; i >= 0; i++) {
-
-            final Order sellOrder = this.sellOrders.get(i);
-
-            if (sellOrder.getPrice() > order.getPrice()) {
-                break;
-            }
-        }
-
-        if (i == n - 1) {
-            this.sellOrders.add(order);
-        } else {
-            final Order current = this.buyOrders.get(i);
-
-            this.buyOrders.set(i + 1, current);
-
-            this.buyOrders.set(i, order);
-        }
+        return 0;
 
     }
 
@@ -214,7 +179,7 @@ public class OrderBook {
      *
      * @param index
      */
-    public synchronized void removeBuyOrder(final int index) {
+    private synchronized void removeBuyOrder(final int index) {
         this.buyOrders.remove(index);
     }
 
@@ -223,7 +188,7 @@ public class OrderBook {
      *
      * @param index
      */
-    public synchronized void removeSellOrder(final int index) {
+    private synchronized void removeSellOrder(final int index) {
         this.sellOrders.remove(index);
     }
 

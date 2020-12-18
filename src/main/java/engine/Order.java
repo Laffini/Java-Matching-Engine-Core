@@ -4,16 +4,16 @@ package engine;
  * @author Laffini
  *
  */
-public class Order {
+public class Order implements Comparable<Order> {
 
-    private int amount;
+    private double amount;
     private double price;
     private String id;
     private Side side;
 
     /**
      * Create an instance of Order.
-     * 
+     *
      * @param amount
      * @param price
      * @param id
@@ -30,14 +30,14 @@ public class Order {
     /**
      * @return the amount
      */
-    public int getAmount() {
+    public double getAmount() {
         return this.amount;
     }
 
     /**
      * @param amount the amount to set
      */
-    public void setAmount(final int amount) {
+    public void setAmount(final double amount) {
         this.amount = amount;
     }
 
@@ -81,6 +81,15 @@ public class Order {
      */
     public void setSide(final Side side) {
         this.side = side;
+    }
+
+    /**
+     * Compare two orders by price.
+     * 
+     * @param o
+     */
+    public int compareTo(final Order o) {
+        return Double.compare(this.getPrice(), o.getPrice());
     }
 
 }
