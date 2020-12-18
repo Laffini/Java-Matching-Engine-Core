@@ -1,5 +1,7 @@
 package engine;
 
+import java.util.Date;
+
 /**
  * @author Laffini
  *
@@ -10,6 +12,7 @@ public class Order implements Comparable<Order> {
     private double price;
     private String id;
     private Side side;
+    private final Date dateTimeOfOrder;
 
     /**
      * Create an instance of Order.
@@ -19,12 +22,13 @@ public class Order implements Comparable<Order> {
      * @param id
      * @param side
      */
-    public Order(final int amount, final double price, final String id, final Side side) {
+    public Order(final int amount, final double price, final String id, final Side side, final Date dateTimeOfOrder) {
         super();
         this.amount = amount;
         this.price = price;
         this.id = id;
         this.side = side;
+        this.dateTimeOfOrder = dateTimeOfOrder;
     }
 
     /**
@@ -84,12 +88,32 @@ public class Order implements Comparable<Order> {
     }
 
     /**
-     * Compare two orders by price.
-     * 
+     * @return the dateTimeOfOrder
+     */
+    public Date getDateTimeOfOrder() {
+        return this.dateTimeOfOrder;
+    }
+
+    /**
+     * Compare two orders by price & time.
+     *
      * @param o
      */
+    @Override
     public int compareTo(final Order o) {
-        return Double.compare(this.getPrice(), o.getPrice());
+
+        if (Double.compare(this.getPrice(), o.getPrice()) == 0) {
+            // If equal, check date & time.
+            if (this.getDateTimeOfOrder().before(o.getDateTimeOfOrder())) {
+                // The current Order occurred before, therefore should appear first.
+                return -1;
+            } else {
+                return 1;
+            }
+
+        } else {
+            return Double.compare(this.getPrice(), o.getPrice());
+        }
     }
 
 }
