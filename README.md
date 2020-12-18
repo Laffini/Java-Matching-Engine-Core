@@ -32,9 +32,3 @@ The matching engine uses a price-time-priority algorithm. The matching priority 
 
     }
 ``` 
-
-## TODO:
-1. Add additional unit and integration tests.
-2. Add performance tests.
-3. Create a GitHub release & add download instructions to README.
-4. Add subscribable events
