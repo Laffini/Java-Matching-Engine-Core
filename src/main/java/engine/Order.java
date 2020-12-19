@@ -15,15 +15,29 @@ public class Order implements Comparable<Order> {
     private final Date dateTimeOfOrder;
 
     /**
-     * Create an instance of Order.
-     *
+     * Create an instance of Order. Date & time set to now.
+     * 
      * @param amount
      * @param price
      * @param id
      * @param side
      */
-    public Order(final int amount, final double price, final String id, final Side side, final Date dateTimeOfOrder) {
-        super();
+    public Order(final double amount, final double price, final String id, final Side side) {
+        this(amount, price, id, side, new Date());
+    }
+
+    /**
+     * Create an instance of Order.
+     * 
+     * @param amount
+     * @param price
+     * @param id
+     * @param side
+     * @param dateTimeOfOrder
+     */
+    public Order(final double amount, final double price, final String id, final Side side,
+            final Date dateTimeOfOrder) {
+
         this.amount = amount;
         this.price = price;
         this.id = id;

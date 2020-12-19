@@ -11,6 +11,7 @@ public class OrderBook {
 
     private ArrayList<Order> buyOrders;
     private ArrayList<Order> sellOrders;
+    private double lastSalePrice;
 
     /**
      * Create an instance of OrderBook.
@@ -71,6 +72,7 @@ public class OrderBook {
                         if (sellOrder.getAmount() == 0) {
                             this.removeSellOrder(0);
                         }
+                        this.setLastSalePrice(sellOrder.getPrice());
                         return trades;
                     }
 
@@ -80,6 +82,7 @@ public class OrderBook {
                                 sellOrder.getPrice()));
                         order.setAmount(order.getAmount() - sellOrder.getAmount());
                         this.removeSellOrder(0);
+                        this.setLastSalePrice(sellOrder.getPrice());
                         continue;
                     }
 
@@ -121,9 +124,6 @@ public class OrderBook {
             // Traverse all matching orders.
             for (int i = 0; i >= 0; i++) {
                 final Order buyOrder = this.buyOrders.get(i);
-                /*
-                 * if (buyOrder.getPrice() < order.getPrice()) { break; }
-                 */
 
                 // Fill entire order.
                 if (buyOrder.getAmount() >= order.getAmount()) {
@@ -132,6 +132,7 @@ public class OrderBook {
                     if (buyOrder.getAmount() == 0) {
                         this.removeBuyOrder(i);
                     }
+                    this.setLastSalePrice(buyOrder.getPrice());
                     return trades;
                 }
 
@@ -140,6 +141,7 @@ public class OrderBook {
                     trades.add(new Trade(order.getId(), buyOrder.getId(), buyOrder.getAmount(), buyOrder.getPrice()));
                     order.setAmount(order.getAmount() - buyOrder.getAmount());
                     this.removeBuyOrder(i);
+                    this.setLastSalePrice(buyOrder.getPrice());
                     continue;
                 }
 
@@ -218,6 +220,20 @@ public class OrderBook {
      */
     public synchronized void setSellOrders(final ArrayList<Order> sellOrders) {
         this.sellOrders = sellOrders;
+    }
+
+    /**
+     * @return the lastSalePrice
+     */
+    public synchronized double getLastSalePrice() {
+        return this.lastSalePrice;
+    }
+
+    /**
+     * @param lastSalePrice the lastSalePrice to set
+     */
+    public synchronized void setLastSalePrice(final double lastSalePrice) {
+        this.lastSalePrice = lastSalePrice;
     }
 
 }
