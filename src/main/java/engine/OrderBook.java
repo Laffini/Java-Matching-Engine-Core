@@ -158,6 +158,70 @@ public class OrderBook {
     }
 
     /**
+     * Cancel an order when the side is unknown.
+     *
+     * @param orderId
+     * @return is order cancelled.
+     * @throws InterruptedException
+     */
+    public boolean cancelOrder(final String orderId) throws InterruptedException {
+
+        // Search buy orders in a thread.
+        final OrderCanceller buyOrders = new OrderCanceller(this.buyOrders, orderId);
+        final Thread buyOrdersThread = new Thread(buyOrders);
+        buyOrdersThread.start();
+
+        // Search sell orders in a thread.
+        final OrderCanceller sellOrders = new OrderCanceller(this.sellOrders, orderId);
+        final Thread sellOrdersThread = new Thread(buyOrders);
+        sellOrdersThread.start();
+
+        // Wait for threads to finish.
+        buyOrdersThread.join();
+        sellOrdersThread.join();
+
+        // Check if either cancelled.
+        if (buyOrders.isOrderCancelled() == true || sellOrders.isOrderCancelled() == true) {
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * Cancel an order when the side is known.
+     *
+     * @param orderId
+     * @param side
+     * @return is order cancelled.
+     * @throws InterruptedException
+     */
+    public boolean cancelOrder(final String orderId, final Side side) throws InterruptedException {
+
+        if (side == Side.BUY) {
+            // Search buy orders.
+            final OrderCanceller buyOrders = new OrderCanceller(this.buyOrders, orderId);
+            final Thread buyOrdersThread = new Thread(buyOrders);
+            buyOrdersThread.start();
+            buyOrdersThread.join();
+            return buyOrders.isOrderCancelled();
+
+        } else if (side == Side.SELL) {
+            // Search sell orders.
+            final OrderCanceller sellOrders = new OrderCanceller(this.sellOrders, orderId);
+            final Thread sellOrdersThread = new Thread(sellOrders);
+            sellOrdersThread.start();
+            sellOrdersThread.join();
+            return sellOrders.isOrderCancelled();
+
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
      * Calculate the spread.
      *
      * @return Difference in buy and sell books.
