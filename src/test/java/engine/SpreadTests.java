@@ -45,4 +45,11 @@ public class SpreadTests extends MatchingEngineTest {
 
     }
 
+    @Test
+    void spread_NoOrders() {
+
+        assertEquals(this.orderBook.getSpread(), 0);
+
+    }
+
 }
