@@ -165,23 +165,8 @@ public class OrderBook {
      * @throws InterruptedException
      */
     public boolean cancelOrder(final String orderId) throws InterruptedException {
-
-        // Search buy orders in a thread.
-        final OrderCanceller buyOrders = new OrderCanceller(this.buyOrders, orderId);
-        final Thread buyOrdersThread = new Thread(buyOrders);
-        buyOrdersThread.start();
-
-        // Search sell orders in a thread.
-        final OrderCanceller sellOrders = new OrderCanceller(this.sellOrders, orderId);
-        final Thread sellOrdersThread = new Thread(buyOrders);
-        sellOrdersThread.start();
-
-        // Wait for threads to finish.
-        buyOrdersThread.join();
-        sellOrdersThread.join();
-
         // Check if either cancelled.
-        if (buyOrders.isOrderCancelled() == true || sellOrders.isOrderCancelled() == true) {
+        if (this.cancelBuyOrder(orderId) == true || this.cancelSellOrder(orderId)) {
             return true;
         } else {
             return false;
@@ -201,24 +186,46 @@ public class OrderBook {
 
         if (side == Side.BUY) {
             // Search buy orders.
-            final OrderCanceller buyOrders = new OrderCanceller(this.buyOrders, orderId);
-            final Thread buyOrdersThread = new Thread(buyOrders);
-            buyOrdersThread.start();
-            buyOrdersThread.join();
-            return buyOrders.isOrderCancelled();
+            return this.cancelBuyOrder(orderId);
 
         } else if (side == Side.SELL) {
             // Search sell orders.
-            final OrderCanceller sellOrders = new OrderCanceller(this.sellOrders, orderId);
-            final Thread sellOrdersThread = new Thread(sellOrders);
-            sellOrdersThread.start();
-            sellOrdersThread.join();
-            return sellOrders.isOrderCancelled();
+            return this.cancelSellOrder(orderId);
 
         } else {
             return false;
         }
 
+    }
+
+    /**
+     * Cancel a buy order.
+     *
+     * @param orderId
+     * @return
+     * @throws InterruptedException
+     */
+    private boolean cancelBuyOrder(final String orderId) throws InterruptedException {
+        final OrderCanceller buyOrders = new OrderCanceller(this.buyOrders, orderId);
+        final Thread buyOrdersThread = new Thread(buyOrders);
+        buyOrdersThread.start();
+        buyOrdersThread.join();
+        return buyOrders.isOrderCancelled();
+    }
+
+    /**
+     * Cancel a sell order.
+     *
+     * @param orderId
+     * @return
+     * @throws InterruptedException
+     */
+    private boolean cancelSellOrder(final String orderId) throws InterruptedException {
+        final OrderCanceller sellOrders = new OrderCanceller(this.sellOrders, orderId);
+        final Thread sellOrdersThread = new Thread(sellOrders);
+        sellOrdersThread.start();
+        sellOrdersThread.join();
+        return sellOrders.isOrderCancelled();
     }
 
     /**
