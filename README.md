@@ -1,6 +1,6 @@
 # Java-Matching-Engine
 
-**In Progress** 
+**In Progress - A complete rewrite is in progress.** 
 
 ![Java CI with Maven](https://github.com/Laffini/Java-Matching-Engine/workflows/Java%20CI%20with%20Maven/badge.svg)
 
