@@ -1,18 +1,20 @@
-package engine;
+package net.laffyco.javamatchingengine.engine;
 
 /**
+ * Order sides.
+ *
  * @author Laffini
  *
  */
 public enum Side {
 
     /**
-     * Buy orders
+     * Buy orders.
      */
     BUY,
 
     /**
-     * Sell orders
+     * Sell orders.
      */
     SELL
 

@@ -1,42 +1,61 @@
-package engine;
+package net.laffyco.javamatchingengine.engine;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 /**
+ * The order book.
+ *
  * @author Laffini
  *
  */
+@Component
 public class OrderBook {
 
-    private ArrayList<Order> buyOrders;
-    private ArrayList<Order> sellOrders;
+    /**
+     * List of asking buy orders.
+     */
+    private List<Order> buyOrders;
+
+    /**
+     * List of asking sell orders.
+     */
+    private List<Order> sellOrders;
+
+    /**
+     * Last sale price.
+     */
     private double lastSalePrice;
 
     /**
      * Create an instance of OrderBook.
      *
-     * @param buyOrders
-     * @param sellOrders
+     * @param pBuyOrders
+     * @param pSellOrders
      */
-    public OrderBook(final ArrayList<Order> buyOrders, final ArrayList<Order> sellOrders) {
+    public OrderBook(final List<Order> pBuyOrders,
+            final List<Order> pSellOrders) {
         super();
-        this.buyOrders = buyOrders;
-        this.sellOrders = sellOrders;
+        this.buyOrders = pBuyOrders;
+        this.sellOrders = pSellOrders;
     }
 
     /**
-     * Process an order and return the trades generated before adding the remaining
-     * amount to the market.
+     * Process an order and return the trades generated before adding the
+     * remaining amount to the market.
      *
-     * @param Order
+     * @param pOrder
+     * @return trades
      */
-    public synchronized ArrayList<Trade> process(final Order order) {
+    public synchronized ArrayList<Trade> process(final Order pOrder) {
 
-        if (order.getSide() == Side.BUY) {
-            return this.processLimitBuy(order);
+        if (pOrder.getSide() == Side.BUY) {
+            return this.processLimitBuy(pOrder);
         } else {
-            return this.processLimitSell(order);
+            return this.processLimitSell(pOrder);
         }
 
     }
@@ -45,7 +64,7 @@ public class OrderBook {
      * Process limit buy.
      *
      * @param order
-     * @return Trades.
+     * @return trades
      */
     private synchronized ArrayList<Trade> processLimitBuy(final Order order) {
         final ArrayList<Trade> trades = new ArrayList<Trade>();
@@ -66,9 +85,10 @@ public class OrderBook {
                     }
                     // Fill entire order.
                     if (sellOrder.getAmount() >= order.getAmount()) {
-                        trades.add(
-                                new Trade(order.getId(), sellOrder.getId(), order.getAmount(), sellOrder.getPrice()));
-                        sellOrder.setAmount(sellOrder.getAmount() - order.getAmount());
+                        trades.add(new Trade(order.getId(), sellOrder.getId(),
+                                order.getAmount(), sellOrder.getPrice()));
+                        sellOrder.setAmount(
+                                sellOrder.getAmount() - order.getAmount());
                         if (sellOrder.getAmount() == 0) {
                             this.removeSellOrder(0);
                         }
@@ -78,16 +98,15 @@ public class OrderBook {
 
                     // Fill partial order & continue.
                     if (sellOrder.getAmount() < order.getAmount()) {
-                        trades.add(new Trade(order.getId(), sellOrder.getId(), sellOrder.getAmount(),
-                                sellOrder.getPrice()));
-                        order.setAmount(order.getAmount() - sellOrder.getAmount());
+                        trades.add(new Trade(order.getId(), sellOrder.getId(),
+                                sellOrder.getAmount(), sellOrder.getPrice()));
+                        order.setAmount(
+                                order.getAmount() - sellOrder.getAmount());
                         this.removeSellOrder(0);
                         this.setLastSalePrice(sellOrder.getPrice());
                         continue;
                     }
-
                 }
-
             }
         }
 
@@ -127,8 +146,10 @@ public class OrderBook {
 
                 // Fill entire order.
                 if (buyOrder.getAmount() >= order.getAmount()) {
-                    trades.add(new Trade(order.getId(), buyOrder.getId(), order.getAmount(), buyOrder.getPrice()));
-                    buyOrder.setAmount(buyOrder.getAmount() - order.getAmount());
+                    trades.add(new Trade(order.getId(), buyOrder.getId(),
+                            order.getAmount(), buyOrder.getPrice()));
+                    buyOrder.setAmount(
+                            buyOrder.getAmount() - order.getAmount());
                     if (buyOrder.getAmount() == 0) {
                         this.removeBuyOrder(i);
                     }
@@ -138,15 +159,14 @@ public class OrderBook {
 
                 // Fill partial order and continue.
                 if (buyOrder.getAmount() < order.getAmount()) {
-                    trades.add(new Trade(order.getId(), buyOrder.getId(), buyOrder.getAmount(), buyOrder.getPrice()));
+                    trades.add(new Trade(order.getId(), buyOrder.getId(),
+                            buyOrder.getAmount(), buyOrder.getPrice()));
                     order.setAmount(order.getAmount() - buyOrder.getAmount());
                     this.removeBuyOrder(i);
                     this.setLastSalePrice(buyOrder.getPrice());
                     continue;
                 }
-
             }
-
         }
         // Add remaining order to the list.
         this.sellOrders.add(order);
@@ -154,7 +174,6 @@ public class OrderBook {
         Collections.sort(this.sellOrders);
 
         return trades;
-
     }
 
     /**
@@ -165,15 +184,55 @@ public class OrderBook {
     public double getSpread() {
 
         if (this.buyOrders.size() != 0 && this.sellOrders.size() != 0) {
-            final double buyOrderPrice = this.buyOrders.get(this.buyOrders.size() - 1).getPrice();
+            final double buyOrderPrice = this.buyOrders
+                    .get(this.buyOrders.size() - 1).getPrice();
 
             final double sellOrderPrice = this.sellOrders.get(0).getPrice();
 
             return sellOrderPrice - buyOrderPrice;
         }
-
         return 0;
+    }
 
+    /**
+     * Cancel an order when the side is known.
+     *
+     * @param orderId
+     * @param side
+     * @return is order cancelled.
+     */
+    public synchronized boolean cancelOrder(final String orderId,
+            final Side side) {
+        if (side == Side.BUY) {
+            // Search buy orders.
+            return this.cancel(orderId, this.buyOrders);
+        } else if (side == Side.SELL) {
+            // Search sell orders.
+            return this.cancel(orderId, this.sellOrders);
+        } else {
+            return false;
+        }
+
+    }
+
+    /**
+     * Cancel an order from an order book.
+     *
+     * @param orderId
+     * @param orderBook
+     * @return whether an order has been cancelled
+     */
+    private synchronized boolean cancel(final String orderId,
+            final List<Order> orderBook) {
+        // Loop through order book to find order.
+        for (int i = 0; i < orderBook.size(); i++) {
+            final Order currentOrder = orderBook.get(i);
+            if (currentOrder.getId().equals(orderId)) {
+                orderBook.remove(i);
+                return true; // Order cancelled.
+            }
+        }
+        return false; // No order cancelled.
     }
 
     /**
@@ -197,29 +256,29 @@ public class OrderBook {
     /**
      * @return the buyOrders
      */
-    public synchronized ArrayList<Order> getBuyOrders() {
+    public synchronized List<Order> getBuyOrders() {
         return this.buyOrders;
     }
 
     /**
-     * @param buyOrders the buyOrders to set
+     * @param pBuyOrders the buyOrders to set
      */
-    public synchronized void setBuyOrders(final ArrayList<Order> buyOrders) {
-        this.buyOrders = buyOrders;
+    public synchronized void setBuyOrders(final ArrayList<Order> pBuyOrders) {
+        this.buyOrders = pBuyOrders;
     }
 
     /**
      * @return the sellOrders
      */
-    public synchronized ArrayList<Order> getSellOrders() {
+    public synchronized List<Order> getSellOrders() {
         return this.sellOrders;
     }
 
     /**
-     * @param sellOrders the sellOrders to set
+     * @param pSellOrders the sellOrders to set
      */
-    public synchronized void setSellOrders(final ArrayList<Order> sellOrders) {
-        this.sellOrders = sellOrders;
+    public synchronized void setSellOrders(final ArrayList<Order> pSellOrders) {
+        this.sellOrders = pSellOrders;
     }
 
     /**
@@ -230,10 +289,9 @@ public class OrderBook {
     }
 
     /**
-     * @param lastSalePrice the lastSalePrice to set
+     * @param pLastSalePrice the lastSalePrice to set
      */
-    public synchronized void setLastSalePrice(final double lastSalePrice) {
-        this.lastSalePrice = lastSalePrice;
+    public synchronized void setLastSalePrice(final double pLastSalePrice) {
+        this.lastSalePrice = pLastSalePrice;
     }
-
 }
