@@ -1,48 +1,69 @@
-package engine;
+package net.laffyco.javamatchingengine.engine;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
+ * Orders.
+ *
  * @author Laffini
  *
  */
 public class Order implements Comparable<Order> {
 
+    /**
+     * Size of the order.
+     */
     private double amount;
+
+    /**
+     * Order price.
+     */
     private double price;
+
+    /**
+     * ID.
+     */
     private String id;
+
+    /**
+     * Side of the order.
+     */
     private Side side;
+
+    /**
+     * Date & Time of order.
+     */
     private final Date dateTimeOfOrder;
 
     /**
      * Create an instance of Order. Date & time set to now.
-     * 
-     * @param amount
-     * @param price
-     * @param id
-     * @param side
+     *
+     * @param pAmount
+     * @param pPrice
+     * @param pSide
      */
-    public Order(final double amount, final double price, final String id, final Side side) {
-        this(amount, price, id, side, new Date());
+    public Order(final double pAmount, final double pPrice, final Side pSide) {
+        this(pAmount, pPrice, UUID.randomUUID().toString(), pSide, new Date());
     }
 
     /**
      * Create an instance of Order.
-     * 
-     * @param amount
-     * @param price
-     * @param id
-     * @param side
-     * @param dateTimeOfOrder
+     *
+     * @param pAmount
+     * @param pPrice
+     * @param pId
+     * @param pSide
+     * @param pDateTimeOfOrder
      */
-    public Order(final double amount, final double price, final String id, final Side side,
-            final Date dateTimeOfOrder) {
+    public Order(final double pAmount, final double pPrice, final String pId,
+            final Side pSide, final Date pDateTimeOfOrder) {
 
-        this.amount = amount;
-        this.price = price;
-        this.id = id;
-        this.side = side;
-        this.dateTimeOfOrder = dateTimeOfOrder;
+        this.amount = pAmount;
+        this.price = pPrice;
+        this.id = pId;
+        this.side = pSide;
+        this.dateTimeOfOrder = pDateTimeOfOrder;
     }
 
     /**
@@ -53,10 +74,10 @@ public class Order implements Comparable<Order> {
     }
 
     /**
-     * @param amount the amount to set
+     * @param pAmount the amount to set
      */
-    public void setAmount(final double amount) {
-        this.amount = amount;
+    public void setAmount(final double pAmount) {
+        this.amount = pAmount;
     }
 
     /**
@@ -67,10 +88,10 @@ public class Order implements Comparable<Order> {
     }
 
     /**
-     * @param price the price to set
+     * @param pPrice the price to set
      */
-    public void setPrice(final double price) {
-        this.price = price;
+    public void setPrice(final double pPrice) {
+        this.price = pPrice;
     }
 
     /**
@@ -81,10 +102,10 @@ public class Order implements Comparable<Order> {
     }
 
     /**
-     * @param id the id to set
+     * @param pId the id to set
      */
-    public void setId(final String id) {
-        this.id = id;
+    public void setId(final String pId) {
+        this.id = pId;
     }
 
     /**
@@ -95,10 +116,10 @@ public class Order implements Comparable<Order> {
     }
 
     /**
-     * @param side the side to set
+     * @param pSide the side to set
      */
-    public void setSide(final Side side) {
-        this.side = side;
+    public void setSide(final Side pSide) {
+        this.side = pSide;
     }
 
     /**
@@ -119,7 +140,8 @@ public class Order implements Comparable<Order> {
         if (Double.compare(this.getPrice(), o.getPrice()) == 0) {
             // If equal, check date & time.
             if (this.getDateTimeOfOrder().before(o.getDateTimeOfOrder())) {
-                // The current Order occurred before, therefore should appear first.
+                // The current Order occurred before, therefore should appear
+                // first.
                 return -1;
             } else {
                 return 1;

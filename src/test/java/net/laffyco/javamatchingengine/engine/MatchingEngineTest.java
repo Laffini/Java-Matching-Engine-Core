@@ -1,4 +1,4 @@
-package engine;
+package net.laffyco.javamatchingengine.engine;
 
 /**
  * Common test functionality.
@@ -6,10 +6,11 @@ package engine;
  * @author Laffini
  *
  */
-abstract public class MatchingEngineTest {
+public abstract class MatchingEngineTest {
+
     /**
      * Add an array of orders to the order book.
-     * 
+     *
      * @param orderBook
      * @param orders
      */
