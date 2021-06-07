@@ -17,8 +17,8 @@ public class OrderBookTests extends MatchingEngineTest {
     /**
      * Array of orders.
      */
-    private final Order[] orders = {new Order(3, 2, "buyOrder", Side.BUY),
-            new Order(3, 2, "sellOrder", Side.SELL) };
+    private final Order[] orders = {new Order(3, 2, Side.BUY),
+            new Order(3, 2, Side.SELL)};
 
     /**
      * Add a buy order, then add a matching sell order.
@@ -52,8 +52,6 @@ public class OrderBookTests extends MatchingEngineTest {
         final Trade trade = trades.get(0);
         assertEquals(trade.getPrice(), this.orders[1].getPrice());
         assertEquals(trade.getAmount(), this.orders[1].getAmount());
-        assertEquals(trade.getMakerOrderId(), "buyOrder");
-        assertEquals(trade.getTakerOrderId(), "sellOrder");
 
         // Assert last trade price
         assertEquals(orderBook.getLastSalePrice(), 2);
@@ -91,11 +89,8 @@ public class OrderBookTests extends MatchingEngineTest {
         final Trade trade = trades.get(0);
         assertEquals(trade.getPrice(), this.orders[0].getPrice());
         assertEquals(trade.getAmount(), this.orders[0].getAmount());
-        assertEquals(trade.getMakerOrderId(), "sellOrder");
-        assertEquals(trade.getTakerOrderId(), "buyOrder");
 
         // Assert last trade price
         assertEquals(orderBook.getLastSalePrice(), 2);
     }
-
 }

@@ -15,15 +15,13 @@ public class OrderTests extends MatchingEngineTest {
      */
     @Test
     public void comparePrice() {
-
         final int amt = 1;
         final double price1 = 2;
         final double price2 = 3;
-        final String id = "id";
         final Side side = Side.BUY;
 
-        final Order order1 = new Order(amt, price1, id, side);
-        final Order order2 = new Order(amt, price2, id, side);
+        final Order order1 = new Order(amt, price1, side);
+        final Order order2 = new Order(amt, price2, side);
 
         // Assert
         assertTrue(order1.compareTo(order2) < 0);

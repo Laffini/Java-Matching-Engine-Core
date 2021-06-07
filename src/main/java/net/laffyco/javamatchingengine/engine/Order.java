@@ -1,6 +1,7 @@
 package net.laffyco.javamatchingengine.engine;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Orders.
@@ -40,12 +41,10 @@ public class Order implements Comparable<Order> {
      *
      * @param pAmount
      * @param pPrice
-     * @param pId
      * @param pSide
      */
-    public Order(final double pAmount, final double pPrice, final String pId,
-            final Side pSide) {
-        this(pAmount, pPrice, pId, pSide, new Date());
+    public Order(final double pAmount, final double pPrice, final Side pSide) {
+        this(pAmount, pPrice, UUID.randomUUID().toString(), pSide, new Date());
     }
 
     /**

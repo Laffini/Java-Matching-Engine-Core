@@ -6,11 +6,14 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import net.laffyco.javamatchingengine.engine.Order;
 import net.laffyco.javamatchingengine.engine.OrderBook;
+import net.laffyco.javamatchingengine.engine.Side;
 
 /**
  * Controller for orders.
@@ -41,10 +44,30 @@ public class OrderController {
         return response;
     }
 
-    // POST add a order
+    /**
+     * Add an order.
+     *
+     * @param side
+     * @param amount
+     * @param price
+     * @return order id
+     */
+    @PostMapping("/")
+    public Map<String, Object> addOrder(@RequestParam("side") final Side side,
+            @RequestParam("amount") final double amount,
+            @RequestParam("price") final double price) {
+        final Map<String, Object> response = new HashMap<>();
 
-    // PUT update an order
+        final Order order = new Order(amount, price, side);
 
-    // Delete, delete an order.
+        response.put("id", order.getId());
+        response.put("trades", this.orderBook.process(order));
+
+        return response;
+    }
+
+    // TODO: PUT update an order
+
+    // TODO: Delete, delete an order.
 
 }

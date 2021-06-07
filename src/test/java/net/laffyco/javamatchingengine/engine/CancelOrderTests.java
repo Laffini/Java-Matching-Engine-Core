@@ -40,10 +40,9 @@ public class CancelOrderTests extends MatchingEngineTest {
 
         final int amt = 1;
         final double price = 1;
-        final String id = "test";
         final Side side = Side.BUY;
         // Create order.
-        final Order order = new Order(amt, price, id, side);
+        final Order order = new Order(amt, price, side);
 
         // Process order
         this.orderBook.process(order);
@@ -52,7 +51,7 @@ public class CancelOrderTests extends MatchingEngineTest {
         assertEquals(this.orderBook.getBuyOrders().size(), 1);
 
         // Cancel order
-        assertEquals(this.orderBook.cancelOrder(id, side), true);
+        assertEquals(this.orderBook.cancelOrder(order.getId(), side), true);
         assertEquals(this.orderBook.getBuyOrders().size(), 0);
     }
 
@@ -65,10 +64,9 @@ public class CancelOrderTests extends MatchingEngineTest {
 
         final int amt = 1;
         final double price = 1;
-        final String id = "test";
         final Side side = Side.BUY;
         // Create order.
-        final Order order = new Order(amt, price, id, side);
+        final Order order = new Order(amt, price, side);
 
         // Process order
         this.orderBook.process(order);
@@ -77,7 +75,7 @@ public class CancelOrderTests extends MatchingEngineTest {
         assertEquals(this.orderBook.getBuyOrders().size(), 1);
 
         // Cancel order
-        assertEquals(this.orderBook.cancelOrder(id, side), true);
+        assertEquals(this.orderBook.cancelOrder(order.getId(), side), true);
         assertEquals(this.orderBook.getBuyOrders().size(), 0);
     }
 
@@ -90,10 +88,9 @@ public class CancelOrderTests extends MatchingEngineTest {
     public void cancelSellOrder() throws InterruptedException {
         final int amt = 1;
         final double price = 1;
-        final String id = "test";
         final Side side = Side.SELL;
         // Create order.
-        final Order order = new Order(amt, price, id, side);
+        final Order order = new Order(amt, price, side);
 
         // Process order
         this.orderBook.process(order);
@@ -102,7 +99,7 @@ public class CancelOrderTests extends MatchingEngineTest {
         assertEquals(this.orderBook.getSellOrders().size(), 1);
 
         // Cancel order
-        assertEquals(this.orderBook.cancelOrder(id, side), true);
+        assertEquals(this.orderBook.cancelOrder(order.getId(), side), true);
         assertEquals(this.orderBook.getSellOrders().size(), 0);
     }
 
@@ -114,10 +111,9 @@ public class CancelOrderTests extends MatchingEngineTest {
     public void cancelSellOrderSideGiven() {
         final int amt = 1;
         final double price = 1;
-        final String id = "test";
         final Side side = Side.SELL;
         // Create order.
-        final Order order = new Order(amt, price, id, side);
+        final Order order = new Order(amt, price, side);
 
         // Process order
         this.orderBook.process(order);
@@ -126,7 +122,7 @@ public class CancelOrderTests extends MatchingEngineTest {
         assertEquals(this.orderBook.getSellOrders().size(), 1);
 
         // Cancel order
-        assertEquals(this.orderBook.cancelOrder(id, side), true);
+        assertEquals(this.orderBook.cancelOrder(order.getId(), side), true);
         assertEquals(this.orderBook.getSellOrders().size(), 0);
     }
 
