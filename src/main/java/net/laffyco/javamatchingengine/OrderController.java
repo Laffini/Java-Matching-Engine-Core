@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,6 +42,23 @@ public class OrderController {
         final Map<String, List<Order>> response = new HashMap<>();
         response.put("buy", this.orderBook.getBuyOrders());
         response.put("sell", this.orderBook.getSellOrders());
+        return response;
+    }
+
+    /**
+     * Retrieve an order by ID.
+     *
+     * @param id
+     * @param side
+     * @return order (or null if not found)
+     */
+    @GetMapping("/{id}")
+    public Map<String, Order> getOrder(@PathVariable final String id,
+            @RequestParam("side") final Side side) {
+        final Map<String, Order> response = new HashMap<>();
+
+        response.put("order", this.orderBook.findOrder(id, side));
+
         return response;
     }
 

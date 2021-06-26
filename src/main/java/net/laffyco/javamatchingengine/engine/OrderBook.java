@@ -50,7 +50,7 @@ public class OrderBook {
      * @param pOrder
      * @return trades
      */
-    public synchronized ArrayList<Trade> process(final Order pOrder) {
+    public synchronized List<Trade> process(final Order pOrder) {
 
         if (pOrder.getSide() == Side.BUY) {
             return this.processLimitBuy(pOrder);
@@ -66,7 +66,7 @@ public class OrderBook {
      * @param order
      * @return trades
      */
-    private synchronized ArrayList<Trade> processLimitBuy(final Order order) {
+    private synchronized List<Trade> processLimitBuy(final Order order) {
         final ArrayList<Trade> trades = new ArrayList<Trade>();
 
         final int n = this.sellOrders.size();
@@ -124,7 +124,7 @@ public class OrderBook {
      * @param order
      * @return Trades.
      */
-    private synchronized ArrayList<Trade> processLimitSell(final Order order) {
+    private synchronized List<Trade> processLimitSell(final Order order) {
 
         final ArrayList<Trade> trades = new ArrayList<Trade>();
 
@@ -192,6 +192,29 @@ public class OrderBook {
             return sellOrderPrice - buyOrderPrice;
         }
         return 0;
+    }
+
+    /**
+     * Find an order by ID.
+     *
+     * @param id
+     * @param side
+     * @return the order (or null if not found)
+     */
+    public Order findOrder(final String id, final Side side) {
+        List<Order> toSearch;
+        if (side == Side.BUY) {
+            toSearch = this.buyOrders;
+        } else {
+            toSearch = this.sellOrders;
+        }
+        for (int i = 0; i < toSearch.size(); i++) {
+            final Order current = toSearch.get(i);
+            if (current.getId().equals(id)) {
+                return current;
+            }
+        }
+        return null;
     }
 
     /**
