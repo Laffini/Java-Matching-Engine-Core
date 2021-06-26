@@ -3,7 +3,9 @@ package net.laffyco.javamatchingengine.engine;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -21,29 +23,40 @@ public class OrderBookTests extends MatchingEngineTest {
             new Order(3, 2, Side.SELL)};
 
     /**
+     * Test OrderBook.
+     */
+    private OrderBook orderBook;
+
+    /**
+     * Test setup.
+     */
+    @BeforeEach
+    public void setUp() {
+        this.orderBook = new OrderBook(new ArrayList<Order>(),
+                new ArrayList<Order>());
+    }
+
+    /**
      * Add a buy order, then add a matching sell order.
      */
     @Test
     public void buyThenSell() {
 
-        final OrderBook orderBook = new OrderBook(new ArrayList<Order>(),
-                new ArrayList<Order>());
-
         // Add buy order
-        orderBook.process(this.orders[0]);
+        this.orderBook.process(this.orders[0]);
 
         // There should only be 1 buy order.
-        assertEquals(orderBook.getBuyOrders().size(), 1);
+        assertEquals(this.orderBook.getBuyOrders().size(), 1);
 
         // There should not be any sell orders
-        assertEquals(orderBook.getSellOrders().size(), 0);
+        assertEquals(this.orderBook.getSellOrders().size(), 0);
 
         // Add sell order
-        final ArrayList<Trade> trades = orderBook.process(this.orders[1]);
+        final List<Trade> trades = this.orderBook.process(this.orders[1]);
 
         // There should not be any buy or sell orders
-        assertEquals(orderBook.getSellOrders().size(), 0);
-        assertEquals(orderBook.getBuyOrders().size(), 0);
+        assertEquals(this.orderBook.getSellOrders().size(), 0);
+        assertEquals(this.orderBook.getBuyOrders().size(), 0);
 
         // There should be only 1 trade
         assertEquals(trades.size(), 1);
@@ -54,7 +67,7 @@ public class OrderBookTests extends MatchingEngineTest {
         assertEquals(trade.getAmount(), this.orders[1].getAmount());
 
         // Assert last trade price
-        assertEquals(orderBook.getLastSalePrice(), 2);
+        assertEquals(this.orderBook.getLastSalePrice(), 2);
     }
 
     /**
@@ -63,24 +76,21 @@ public class OrderBookTests extends MatchingEngineTest {
     @Test
     public void sellThenBuy() {
 
-        final OrderBook orderBook = new OrderBook(new ArrayList<Order>(),
-                new ArrayList<Order>());
-
         // Add sell order
-        orderBook.process(this.orders[1]);
+        this.orderBook.process(this.orders[1]);
 
         // There should only be 1 sell order.
-        assertEquals(orderBook.getSellOrders().size(), 1);
+        assertEquals(this.orderBook.getSellOrders().size(), 1);
 
         // There should not be any buy orders
-        assertEquals(orderBook.getBuyOrders().size(), 0);
+        assertEquals(this.orderBook.getBuyOrders().size(), 0);
 
         // Add buy order
-        final ArrayList<Trade> trades = orderBook.process(this.orders[0]);
+        final List<Trade> trades = this.orderBook.process(this.orders[0]);
 
         // There should not be any buy or sell orders
-        assertEquals(orderBook.getSellOrders().size(), 0);
-        assertEquals(orderBook.getBuyOrders().size(), 0);
+        assertEquals(this.orderBook.getSellOrders().size(), 0);
+        assertEquals(this.orderBook.getBuyOrders().size(), 0);
 
         // There should be only 1 trade
         assertEquals(trades.size(), 1);
@@ -91,6 +101,33 @@ public class OrderBookTests extends MatchingEngineTest {
         assertEquals(trade.getAmount(), this.orders[0].getAmount());
 
         // Assert last trade price
-        assertEquals(orderBook.getLastSalePrice(), 2);
+        assertEquals(this.orderBook.getLastSalePrice(), 2);
+    }
+
+    /**
+     * Find order tests.
+     */
+    @Test
+    public void findOrder() {
+
+        // Can't find an order that hasn't been added to the book.
+        assertEquals(this.orderBook.findOrder(this.orders[1].getId(),
+                this.orders[1].getSide()), null);
+        assertEquals(this.orderBook.findOrder(this.orders[0].getId(),
+                this.orders[0].getSide()), null);
+
+        // Add sell order
+        this.orderBook.process(this.orders[1]);
+
+        // Can find the order now.
+        assertEquals(this.orderBook.findOrder(this.orders[1].getId(),
+                this.orders[1].getSide()), this.orders[1]);
+
+        // Add & find buy order.
+        this.orderBook.process(this.orders[0]);
+        // Add twice as first is matched with previous sell.
+        this.orderBook.process(this.orders[0]);
+        assertEquals(this.orderBook.findOrder(this.orders[0].getId(),
+                this.orders[0].getSide()), this.orders[0]);
     }
 }
