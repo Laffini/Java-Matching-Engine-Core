@@ -99,4 +99,22 @@ public class OrderControllerTests {
         assertEquals(result.get("trades"), trades);
     }
 
+    /**
+     * Delete an order.
+     */
+    @Test
+    public void deleteOrder() {
+        final String id = "id";
+        final Side side = Side.BUY;
+
+        Mockito.when(this.orderBook.cancelOrder(id, side)).thenReturn(true);
+
+        final Map<String, Object> result = this.controller.deleteOrder(id,
+                side);
+
+        assertTrue((boolean) result.get("order_deleted"));
+
+        Mockito.verify(this.orderBook).cancelOrder(id, side);
+    }
+
 }

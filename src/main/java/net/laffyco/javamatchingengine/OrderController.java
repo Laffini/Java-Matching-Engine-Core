@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -84,8 +85,24 @@ public class OrderController {
         return response;
     }
 
+    /**
+     * Delete an order.
+     *
+     * @param id
+     * @param side
+     * @return whether an order was deleted or not
+     */
+    @DeleteMapping("/{id}")
+    public Map<String, Object> deleteOrder(@PathVariable final String id,
+            @RequestParam("side") final Side side) {
+        final Map<String, Object> response = new HashMap<>();
+
+        final boolean result = this.orderBook.cancelOrder(id, side);
+
+        response.put("order_deleted", result);
+
+        return response;
+    }
+
     // TODO: PUT update an order
-
-    // TODO: Delete, delete an order.
-
 }
