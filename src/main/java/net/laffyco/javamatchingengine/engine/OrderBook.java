@@ -51,13 +51,11 @@ public class OrderBook {
      * @return trades
      */
     public synchronized List<Trade> process(final Order pOrder) {
-
         if (pOrder.getSide() == Side.BUY) {
             return this.processLimitBuy(pOrder);
         } else {
             return this.processLimitSell(pOrder);
         }
-
     }
 
     /**
@@ -72,7 +70,6 @@ public class OrderBook {
         final int n = this.sellOrders.size();
 
         // Check if order book is empty.
-
         if (n != 0) {
             // Check if at least one matching order.
             if (this.sellOrders.get(n - 1).getPrice() <= order.getPrice()) {
@@ -201,7 +198,7 @@ public class OrderBook {
      * @param side
      * @return the order (or null if not found)
      */
-    public Order findOrder(final String id, final Side side) {
+    public synchronized Order findOrder(final String id, final Side side) {
         List<Order> toSearch;
         if (side == Side.BUY) {
             toSearch = this.buyOrders;
@@ -235,7 +232,6 @@ public class OrderBook {
         } else {
             return false;
         }
-
     }
 
     /**
