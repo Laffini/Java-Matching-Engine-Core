@@ -2,9 +2,10 @@ package net.laffyco.javamatchingengine.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.ArrayList;
+import javax.annotation.Resource;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 /**
  * Test the cancel order functionality.
@@ -17,8 +18,9 @@ public class CancelOrderTests extends MatchingEngineTest {
     /**
      * Order book.
      */
-    private final OrderBook orderBook = new OrderBook(new ArrayList<Order>(),
-            new ArrayList<Order>());
+    @InjectMocks
+    @Resource
+    private OrderBook orderBook;
 
     /**
      * Attempt to cancel an order that doesn't exist.
@@ -125,5 +127,4 @@ public class CancelOrderTests extends MatchingEngineTest {
         assertEquals(this.orderBook.cancelOrder(order.getId(), side), true);
         assertEquals(this.orderBook.getSellOrders().size(), 0);
     }
-
 }

@@ -1,12 +1,14 @@
 package net.laffyco.javamatchingengine.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
+import javax.annotation.Resource;
+
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 
 /**
  * Order book tests.
@@ -19,22 +21,24 @@ public class OrderBookTests extends MatchingEngineTest {
     /**
      * Array of orders.
      */
-    private final Order[] orders = {new Order(3, 2, Side.BUY),
-            new Order(3, 2, Side.SELL)};
+    private final Order[] orders = { new Order(3, 2, Side.BUY),
+            new Order(3, 2, Side.SELL) };
 
     /**
      * Test OrderBook.
      */
+    @InjectMocks
+    @Resource
     private OrderBook orderBook;
 
-    /**
-     * Test setup.
-     */
-    @BeforeEach
-    public void setUp() {
-        this.orderBook = new OrderBook(new ArrayList<Order>(),
-                new ArrayList<Order>());
-    }
+//    /**
+//     * Test setup.
+//     */
+//    @BeforeEach
+//    public void setUp() {
+//        this.orderBook = new OrderBook(new ArrayList<Order>(),
+//                new ArrayList<Order>());
+//    }
 
     /**
      * Add a buy order, then add a matching sell order.
@@ -129,5 +133,17 @@ public class OrderBookTests extends MatchingEngineTest {
         this.orderBook.process(this.orders[0]);
         assertEquals(this.orderBook.findOrder(this.orders[0].getId(),
                 this.orders[0].getSide()), this.orders[0]);
+    }
+
+    /**
+     * Test that no orders are cancelled when an invalid side is provided.
+     */
+    @Test
+    public void cancelTestInvalidSide() {
+
+        final String orderId = "";
+
+        final boolean result = this.orderBook.cancelOrder(orderId, null);
+        assertFalse(result);
     }
 }

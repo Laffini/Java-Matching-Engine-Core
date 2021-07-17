@@ -1,5 +1,8 @@
 package net.laffyco.javamatchingengine.engine;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.mockito.MockitoAnnotations;
+
 /**
  * Common test functionality.
  *
@@ -7,6 +10,14 @@ package net.laffyco.javamatchingengine.engine;
  *
  */
 public abstract class MatchingEngineTest {
+
+    /**
+     * Test setup.
+     */
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+    }
 
     /**
      * Add an array of orders to the order book.
