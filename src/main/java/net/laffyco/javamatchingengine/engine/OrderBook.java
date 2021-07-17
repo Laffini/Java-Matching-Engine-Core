@@ -31,16 +31,11 @@ public class OrderBook {
     private double lastSalePrice;
 
     /**
-     * Create an instance of OrderBook.
-     *
-     * @param pBuyOrders
-     * @param pSellOrders
+     * Constructor.
      */
-    public OrderBook(final List<Order> pBuyOrders,
-            final List<Order> pSellOrders) {
-        super();
-        this.buyOrders = pBuyOrders;
-        this.sellOrders = pSellOrders;
+    public OrderBook() {
+        this.buyOrders = new ArrayList<Order>();
+        this.sellOrders = new ArrayList<Order>();
     }
 
     /**
