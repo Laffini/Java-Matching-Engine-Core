@@ -3,9 +3,9 @@ package net.laffyco.javamatchingengine.engine;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Date;
-
 import javax.annotation.Resource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -24,6 +24,7 @@ public class SpreadTests extends MatchingEngineTest {
     private OrderBook orderBook;
 
     @Test
+    @DisplayName("Get the spread when there are two orders")
     void spreadTwoOrders() {
         final Order[] orders = {
                 new Order(2, 2.50, "sellOrder", Side.SELL, new Date()),
@@ -36,6 +37,7 @@ public class SpreadTests extends MatchingEngineTest {
     }
 
     @Test
+    @DisplayName("Get the spread when there are multiple orders")
     void spreadMultipleOrders() {
         final Order[] orders = {
                 new Order(2, 2.50, "sellOrder", Side.SELL, new Date()),
@@ -50,6 +52,7 @@ public class SpreadTests extends MatchingEngineTest {
     }
 
     @Test
+    @DisplayName("Attempt to get the spread when there are no orders")
     void spreadNoOrders() {
         assertEquals(this.orderBook.getSpread(), 0);
     }

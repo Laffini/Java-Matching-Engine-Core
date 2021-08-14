@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -55,6 +56,7 @@ public class OrderControllerTests {
      * Get orders test.
      */
     @Test
+    @DisplayName("Get the orders")
     public void getOrders() {
         final Map<String, List<Order>> result = this.controller.getOrders();
 
@@ -69,6 +71,7 @@ public class OrderControllerTests {
      * Get order by ID test.
      */
     @Test
+    @DisplayName("Get an order by ID")
     public void getOrderById() {
         final Order found = Mockito.mock(Order.class);
         final String id = "testId";
@@ -83,6 +86,7 @@ public class OrderControllerTests {
      * Add order test.
      */
     @Test
+    @DisplayName("Add an order")
     public void addOrder() {
         final Side side = Side.BUY;
         final double amt = 10;
@@ -103,6 +107,7 @@ public class OrderControllerTests {
      * Delete an order.
      */
     @Test
+    @DisplayName("Delete an order")
     public void deleteOrder() {
         final String id = "id";
         final Side side = Side.BUY;

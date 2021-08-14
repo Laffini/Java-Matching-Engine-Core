@@ -1,9 +1,8 @@
 package net.laffyco.javamatchingengine.engine;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.Date;
-
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -20,6 +19,7 @@ public class OrderTests extends MatchingEngineTest {
      * Compare two orders with different prices.
      */
     @Test
+    @DisplayName("Compare two orders with different prices")
     public void comparePrice() {
         final double price2 = 3;
 
