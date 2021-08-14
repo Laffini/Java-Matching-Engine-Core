@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.annotation.Resource;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -27,6 +28,7 @@ public class CancelOrderTests extends MatchingEngineTest {
      *
      */
     @Test
+    @DisplayName("Attempt to cancel an order that doesn't exist")
     public void cancelNoCancellation() {
         assertEquals(this.orderBook.cancelOrder("test", Side.BUY), false);
         assertEquals(this.orderBook.cancelOrder("test", Side.SELL), false);
@@ -38,6 +40,7 @@ public class CancelOrderTests extends MatchingEngineTest {
      * @throws InterruptedException
      */
     @Test
+    @DisplayName("Cancel a buy order with the side not given")
     public void cancelBuyOrder() throws InterruptedException {
 
         final int amt = 1;
@@ -62,6 +65,7 @@ public class CancelOrderTests extends MatchingEngineTest {
      *
      */
     @Test
+    @DisplayName("Cancel a buy order")
     public void cancelBuyOrderSideGiven() {
 
         final int amt = 1;
@@ -87,6 +91,7 @@ public class CancelOrderTests extends MatchingEngineTest {
      * @throws InterruptedException
      */
     @Test
+    @DisplayName("Cancel a sell order with the side not given")
     public void cancelSellOrder() throws InterruptedException {
         final int amt = 1;
         final double price = 1;
@@ -110,6 +115,7 @@ public class CancelOrderTests extends MatchingEngineTest {
      *
      */
     @Test
+    @DisplayName("Cancel a sell order")
     public void cancelSellOrderSideGiven() {
         final int amt = 1;
         final double price = 1;

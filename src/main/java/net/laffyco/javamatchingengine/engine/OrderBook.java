@@ -134,7 +134,7 @@ public class OrderBook {
         if (n != 0 || currentPrice >= order.getPrice()) {
             // Traverse all matching orders.
             for (int i = 0; i >= 0; i++) {
-                final Order buyOrder = this.buyOrders.get(i);
+                final Order buyOrder = this.buyOrders.get(0);
 
                 // Fill entire order.
                 if (buyOrder.getAmount() >= order.getAmount()) {
@@ -143,7 +143,7 @@ public class OrderBook {
                     buyOrder.setAmount(
                             buyOrder.getAmount() - order.getAmount());
                     if (buyOrder.getAmount() == 0) {
-                        this.removeBuyOrder(i);
+                        this.removeBuyOrder(0);
                     }
                     this.setLastSalePrice(buyOrder.getPrice());
                     return trades;
@@ -154,7 +154,7 @@ public class OrderBook {
                     trades.add(new Trade(order.getId(), buyOrder.getId(),
                             buyOrder.getAmount(), buyOrder.getPrice()));
                     order.setAmount(order.getAmount() - buyOrder.getAmount());
-                    this.removeBuyOrder(i);
+                    this.removeBuyOrder(0);
                     this.setLastSalePrice(buyOrder.getPrice());
                     continue;
                 }

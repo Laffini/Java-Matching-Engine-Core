@@ -2,11 +2,11 @@ package net.laffyco.javamatchingengine.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.List;
-
 import javax.annotation.Resource;
-
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
@@ -31,19 +31,12 @@ public class OrderBookTests extends MatchingEngineTest {
     @Resource
     private OrderBook orderBook;
 
-//    /**
-//     * Test setup.
-//     */
-//    @BeforeEach
-//    public void setUp() {
-//        this.orderBook = new OrderBook(new ArrayList<Order>(),
-//                new ArrayList<Order>());
-//    }
 
     /**
      * Add a buy order, then add a matching sell order.
      */
     @Test
+    @DisplayName("Add a buy order, then add a matching sell order")
     public void buyThenSell() {
 
         // Add buy order
@@ -78,6 +71,7 @@ public class OrderBookTests extends MatchingEngineTest {
      * Add a sell order, then add a buy order.
      */
     @Test
+    @DisplayName("Add a sell order, then add a matching buy order")
     public void sellThenBuy() {
 
         // Add sell order
@@ -112,6 +106,7 @@ public class OrderBookTests extends MatchingEngineTest {
      * Find order tests.
      */
     @Test
+    @DisplayName("Find orders")
     public void findOrder() {
 
         // Can't find an order that hasn't been added to the book.
@@ -139,11 +134,76 @@ public class OrderBookTests extends MatchingEngineTest {
      * Test that no orders are cancelled when an invalid side is provided.
      */
     @Test
+	@DisplayName("No orders are cancelled when an invalid side is provided")
     public void cancelTestInvalidSide() {
 
         final String orderId = "";
 
         final boolean result = this.orderBook.cancelOrder(orderId, null);
         assertFalse(result);
+    }
+
+	/**
+     * A buy order that fills two sell orders.
+     */
+    @Test
+    @DisplayName("A buy order that fills two sell orders")
+    public void buyPartialFill() {
+
+        // Add two sell orders.
+        this.orderBook.process(this.orders[1]);
+        this.orderBook.process(this.orders[1]);
+
+        // Modify buy order to be twice the amount.
+        final Order buyOrder = this.orders[0];
+        buyOrder.setAmount(buyOrder.getAmount() * 2);
+
+        // Add the buy order.
+        final List<Trade> trades = this.orderBook.process(buyOrder);
+
+        // Two trades should have taken place.
+        assertTrue(trades.size() == 2);
+
+        // Order book should be empty.
+        assertTrue(this.orderBook.getBuyOrders().isEmpty());
+        assertTrue(this.orderBook.getSellOrders().isEmpty());
+
+        // The trades match the expected amt and price.
+        for (final Trade trade : trades) {
+            assertTrue(trade.getAmount() == buyOrder.getAmount());
+            assertTrue(trade.getPrice() == buyOrder.getPrice());
+        }
+    }
+
+    /**
+     * A buy order that fills two sell orders.
+     */
+    @Test
+    @DisplayName("A sell order that fills two buy orders")
+    public void sellPartialFill() {
+
+        // Add two buy orders.
+        this.orderBook.process(this.orders[0]);
+        this.orderBook.process(this.orders[0]);
+
+        // Modify sell order to be twice the amount.
+        final Order sellOrder = this.orders[1];
+        sellOrder.setAmount(sellOrder.getAmount() * 2);
+
+        // Add the buy order.
+        final List<Trade> trades = this.orderBook.process(sellOrder);
+
+        // Two trades should have taken place.
+        assertTrue(trades.size() == 2);
+
+        // Order book should be empty.
+        assertTrue(this.orderBook.getBuyOrders().isEmpty());
+        assertTrue(this.orderBook.getSellOrders().isEmpty());
+
+        // The trades match the expected amt and price.
+        for (final Trade trade : trades) {
+            assertTrue(trade.getAmount() == sellOrder.getAmount());
+            assertTrue(trade.getPrice() == sellOrder.getPrice());
+        }
     }
 }
