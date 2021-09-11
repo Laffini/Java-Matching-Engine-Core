@@ -3,9 +3,11 @@ package net.laffyco.javamatchingengine.engine;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
+
 import javax.annotation.Resource;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,8 +23,8 @@ public class OrderBookTests extends MatchingEngineTest {
     /**
      * Array of orders.
      */
-    private final Order[] orders = { new Order(3, 2, Side.BUY),
-            new Order(3, 2, Side.SELL) };
+    private final Order[] orders = {new Order(3, 2, Side.BUY),
+            new Order(3, 2, Side.SELL)};
 
     /**
      * Test OrderBook.
@@ -30,7 +32,6 @@ public class OrderBookTests extends MatchingEngineTest {
     @InjectMocks
     @Resource
     private OrderBook orderBook;
-
 
     /**
      * Add a buy order, then add a matching sell order.
@@ -134,7 +135,7 @@ public class OrderBookTests extends MatchingEngineTest {
      * Test that no orders are cancelled when an invalid side is provided.
      */
     @Test
-	@DisplayName("No orders are cancelled when an invalid side is provided")
+    @DisplayName("No orders are cancelled when an invalid side is provided")
     public void cancelTestInvalidSide() {
 
         final String orderId = "";
@@ -143,7 +144,7 @@ public class OrderBookTests extends MatchingEngineTest {
         assertFalse(result);
     }
 
-	/**
+    /**
      * A buy order that fills two sell orders.
      */
     @Test

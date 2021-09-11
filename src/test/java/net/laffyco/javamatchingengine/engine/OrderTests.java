@@ -1,19 +1,34 @@
 package net.laffyco.javamatchingengine.engine;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.Date;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 /**
+ * Order tests.
+ *
  * @author Laffini
  *
  */
 public class OrderTests extends MatchingEngineTest {
 
-    final int amt = 1;
-    final double price = 2;
-    final Side side = Side.BUY;
+    /**
+     * Order amount.
+     */
+    private final int amt = 1;
+
+    /**
+     * Order price.
+     */
+    private final double price = 2;
+
+    /**
+     * Order side.
+     */
+    private final Side side = Side.BUY;
 
     /**
      * Compare two orders with different prices.

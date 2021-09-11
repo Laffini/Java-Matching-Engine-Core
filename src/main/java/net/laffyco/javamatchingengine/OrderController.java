@@ -3,12 +3,14 @@ package net.laffyco.javamatchingengine;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -104,5 +106,49 @@ public class OrderController {
         return response;
     }
 
-    // TODO: PUT update an order
+    /**
+     * Update an order.
+     *
+     * @param id
+     * @param side
+     * @param newAmount
+     * @param newPrice
+     * @param newSide
+     * @return whether an order has been updated or not
+     */
+    @PutMapping("/{id}")
+    public Map<String, Object> updateOrder(@PathVariable final String id,
+            @RequestParam("side") final Side side,
+            @RequestParam("newAmount") final Optional<Double> newAmount,
+            @RequestParam("newPrice") final Optional<Double> newPrice,
+            @RequestParam("newSide") final Optional<Side> newSide) {
+
+        final Map<String, Object> response = new HashMap<>();
+
+        boolean isUpdated = false;
+
+        final Order toUpdate = this.orderBook.findOrder(id, side);
+
+        if (newAmount.isPresent()) {
+            // Update amount.
+            toUpdate.setAmount(newAmount.get());
+            isUpdated = true;
+        }
+
+        if (newPrice.isPresent()) {
+            // Update price.
+            toUpdate.setPrice(newPrice.get());
+            isUpdated = true;
+        }
+
+        if (newSide.isPresent()) {
+            // Update side.
+            toUpdate.setSide(newSide.get());
+            isUpdated = true;
+        }
+
+        response.put("updated", isUpdated);
+
+        return response;
+    }
 }
