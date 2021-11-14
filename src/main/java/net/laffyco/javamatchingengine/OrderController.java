@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 import net.laffyco.javamatchingengine.engine.Order;
 import net.laffyco.javamatchingengine.engine.OrderBook;
 import net.laffyco.javamatchingengine.engine.Side;
+import net.laffyco.javamatchingengine.engine.Trade;
+import net.laffyco.javamatchingengine.events.OrderAddedEvent;
+import net.laffyco.javamatchingengine.events.OrderMatchedEvent;
 
 /**
  * Controller for orders.
@@ -34,6 +38,12 @@ public class OrderController {
      */
     @Autowired
     private OrderBook orderBook;
+
+    /**
+     * Event publisher.
+     */
+    @Autowired
+    private ApplicationEventPublisher applicationEventPublisher;
 
     /**
      * Retrieve orders.
@@ -81,8 +91,17 @@ public class OrderController {
 
         final Order order = new Order(amount, price, side);
 
+        final List<Trade> trades = this.orderBook.process(order);
+
         response.put("id", order.getId());
-        response.put("trades", this.orderBook.process(order));
+        response.put("trades", trades);
+        this.applicationEventPublisher
+                .publishEvent(new OrderAddedEvent(this, order));
+
+        if (!trades.isEmpty()) {
+            this.applicationEventPublisher
+                    .publishEvent(new OrderMatchedEvent(this, trades));
+        }
 
         return response;
     }

@@ -1,10 +1,11 @@
 package net.laffyco.javamatchingengine.scenarios;
 
-import io.cucumber.junit.Cucumber;
-import io.cucumber.junit.CucumberOptions;
+import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
+
 import org.junit.runner.RunWith;
 
-import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
 
 /**
  * Cucumber test runner.
@@ -12,7 +13,8 @@ import static io.cucumber.junit.CucumberOptions.SnippetType.CAMELCASE;
  * @author Laffini
  */
 @RunWith(Cucumber.class)
-@CucumberOptions(plugin = {"pretty", "summary"}, snippets = CAMELCASE,
+@CucumberOptions(plugin = { "pretty",
+        "summary" }, snippets = CAMELCASE,
         features = "src/test/java/net/laffyco/javamatchingengine/scenarios/")
 public class CucumberRunner {
     // Intentionally left blank.

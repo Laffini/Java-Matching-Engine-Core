@@ -12,14 +12,20 @@ import javax.annotation.Resource;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 
 import net.laffyco.javamatchingengine.engine.Order;
 import net.laffyco.javamatchingengine.engine.OrderBook;
 import net.laffyco.javamatchingengine.engine.Side;
 import net.laffyco.javamatchingengine.engine.Trade;
+import net.laffyco.javamatchingengine.events.OrderAddedEvent;
+import net.laffyco.javamatchingengine.events.OrderMatchedEvent;
 import test.utils.AbstractTest;
 
 /**
@@ -37,11 +43,23 @@ public class OrderControllerTests extends AbstractTest {
     private OrderBook orderBook;
 
     /**
+     * Event publisher.
+     */
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
+
+    /**
      * Controller under test.
      */
     @InjectMocks
     @Resource
     private OrderController controller;
+
+    /**
+     * Key captor.
+     */
+    @Captor
+    private ArgumentCaptor<ApplicationEvent> captor;
 
     /**
      * Test data id.
@@ -60,6 +78,11 @@ public class OrderControllerTests extends AbstractTest {
      * Test data amount.
      */
     private final double amt = 25.0;
+
+    /**
+     * Test data price.
+     */
+    private final double price = 25;
 
     @Override
     public final void init() {
@@ -100,17 +123,39 @@ public class OrderControllerTests extends AbstractTest {
     @Test
     @DisplayName("Add an order")
     public void addOrder() {
-        final double price = 25;
-
         final List<Trade> trades = new ArrayList<Trade>();
         Mockito.when(this.orderBook.process(Mockito.any())).thenReturn(trades);
 
         final Map<String, Object> result = this.controller.addOrder(this.side,
-                this.amt, price);
+                this.amt, this.price);
 
         assertTrue(result.containsKey(this.id));
         assertTrue(result.containsKey("trades"));
         assertEquals(result.get("trades"), trades);
+    }
+
+    /**
+     * Checking that the correct events are published.
+     */
+    @Test
+    @DisplayName("Check that appropriate events are published")
+    public void events() {
+        final List<Trade> trades = new ArrayList<Trade>() {
+            {
+                this.add(null);
+            }
+        };
+        Mockito.when(this.orderBook.process(Mockito.any())).thenReturn(trades);
+
+        this.controller.addOrder(this.side, this.amt, this.price);
+
+        Mockito.verify(this.applicationEventPublisher, Mockito.times(2))
+                .publishEvent(this.captor.capture());
+
+        assertTrue(
+                this.captor.getAllValues().get(0) instanceof OrderAddedEvent);
+        assertTrue(
+                this.captor.getAllValues().get(1) instanceof OrderMatchedEvent);
     }
 
     /**
@@ -137,16 +182,15 @@ public class OrderControllerTests extends AbstractTest {
     @Test
     @DisplayName("Update an order")
     public void updateOrder() {
-        final double price = 35.0;
         final Side newSide = Side.SELL;
 
         final Map<String, Object> result = this.controller.updateOrder(this.id,
-                this.side, Optional.of(this.amt), Optional.of(price),
+                this.side, Optional.of(this.amt), Optional.of(this.price),
                 Optional.of(newSide));
 
         assertTrue((boolean) result.get("updated"));
         Mockito.verify(this.mockOrder).setAmount(this.amt);
-        Mockito.verify(this.mockOrder).setPrice(price);
+        Mockito.verify(this.mockOrder).setPrice(this.price);
         Mockito.verify(this.mockOrder).setSide(newSide);
     }
 
@@ -156,7 +200,6 @@ public class OrderControllerTests extends AbstractTest {
     @Test
     @DisplayName("Update an order with one parameter")
     public void updateOrder1Param() {
-
         final Map<String, Object> result = this.controller.updateOrder(this.id,
                 this.side, Optional.of(this.amt), Optional.empty(),
                 Optional.empty());
