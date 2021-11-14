@@ -1,5 +1,10 @@
 package net.laffyco.javamatchingengine.scenarios.orders;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.List;
+
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -7,13 +12,9 @@ import net.laffyco.javamatchingengine.engine.Order;
 import net.laffyco.javamatchingengine.engine.OrderBook;
 import net.laffyco.javamatchingengine.engine.Side;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 /**
  * Orders feature steps.
+ *
  * @author Laffini
  */
 public class OrdersSteps {
@@ -28,11 +29,17 @@ public class OrdersSteps {
      */
     private Order order;
 
+    /**
+     * Create the order book.
+     */
     @Given("There is an instance of the order book")
     public void createOrderBook() {
         this.orderBook = new OrderBook();
     }
 
+    /**
+     * Add the order.
+     */
     @When("I add an order")
     public void addOrder() {
         final double amount = 10;
@@ -40,9 +47,12 @@ public class OrdersSteps {
         final Side side = Side.BUY;
 
         this.order = new Order(amount, price, side);
-        this.orderBook.process(order);
+        this.orderBook.process(this.order);
     }
 
+    /**
+     * Confirm order is added.
+     */
     @Then("It is added to the order book")
     public void orderIsAdded() {
         final List<Order> buyOrders = this.orderBook.getBuyOrders();
