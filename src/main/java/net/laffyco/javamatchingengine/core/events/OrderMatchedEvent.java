@@ -1,10 +1,10 @@
-package net.laffyco.javamatchingengine.events;
+package net.laffyco.javamatchingengine.core.events;
 
 import java.util.List;
 
 import org.springframework.context.ApplicationEvent;
 
-import net.laffyco.javamatchingengine.engine.Trade;
+import net.laffyco.javamatchingengine.core.engine.Trade;
 
 /**
  * Order matched event.

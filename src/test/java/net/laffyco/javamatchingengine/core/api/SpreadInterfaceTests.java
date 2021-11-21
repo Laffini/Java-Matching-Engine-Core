@@ -1,4 +1,4 @@
-package net.laffyco.javamatchingengine;
+package net.laffyco.javamatchingengine.core.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,14 +12,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import net.laffyco.javamatchingengine.engine.OrderBook;
+import net.laffyco.javamatchingengine.core.api.SpreadInterface;
+import net.laffyco.javamatchingengine.core.engine.OrderBook;
 import test.utils.AbstractTest;
 
 /**
  * @author Laffini
  *
  */
-public class SpreadControllerTests extends AbstractTest {
+public class SpreadInterfaceTests extends AbstractTest {
 
     /**
      * Mock order book.
@@ -32,7 +33,7 @@ public class SpreadControllerTests extends AbstractTest {
      */
     @InjectMocks
     @Resource
-    private SpreadController controller;
+    private SpreadInterface controller;
 
     @Override
     public void init() {

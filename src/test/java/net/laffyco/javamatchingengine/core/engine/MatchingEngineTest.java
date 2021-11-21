@@ -1,7 +1,10 @@
-package net.laffyco.javamatchingengine.engine;
+package net.laffyco.javamatchingengine.core.engine;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
+
+import net.laffyco.javamatchingengine.core.engine.Order;
+import net.laffyco.javamatchingengine.core.engine.OrderBook;
 
 /**
  * Common test functionality.

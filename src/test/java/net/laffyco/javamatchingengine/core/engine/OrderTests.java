@@ -1,4 +1,4 @@
-package net.laffyco.javamatchingengine.engine;
+package net.laffyco.javamatchingengine.core.engine;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -6,6 +6,9 @@ import java.util.Date;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import net.laffyco.javamatchingengine.core.engine.Order;
+import net.laffyco.javamatchingengine.core.engine.Side;
 
 /**
  * Order tests.

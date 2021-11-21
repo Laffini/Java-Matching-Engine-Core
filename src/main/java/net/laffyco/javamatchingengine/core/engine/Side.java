@@ -1,4 +1,4 @@
-package net.laffyco.javamatchingengine.engine;
+package net.laffyco.javamatchingengine.core.engine;
 
 /**
  * Order sides.
