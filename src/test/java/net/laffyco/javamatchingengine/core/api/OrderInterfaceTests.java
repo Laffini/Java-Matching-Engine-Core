@@ -1,4 +1,4 @@
-package net.laffyco.javamatchingengine;
+package net.laffyco.javamatchingengine.core.api;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,21 +20,22 @@ import org.mockito.Mockito;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-import net.laffyco.javamatchingengine.engine.Order;
-import net.laffyco.javamatchingengine.engine.OrderBook;
-import net.laffyco.javamatchingengine.engine.Side;
-import net.laffyco.javamatchingengine.engine.Trade;
-import net.laffyco.javamatchingengine.events.OrderAddedEvent;
-import net.laffyco.javamatchingengine.events.OrderMatchedEvent;
+import net.laffyco.javamatchingengine.core.api.OrderInterface;
+import net.laffyco.javamatchingengine.core.engine.Order;
+import net.laffyco.javamatchingengine.core.engine.OrderBook;
+import net.laffyco.javamatchingengine.core.engine.Side;
+import net.laffyco.javamatchingengine.core.engine.Trade;
+import net.laffyco.javamatchingengine.core.events.OrderAddedEvent;
+import net.laffyco.javamatchingengine.core.events.OrderMatchedEvent;
 import test.utils.AbstractTest;
 
 /**
- * Tests for the OrderController class.
+ * Tests for the OrderInterface class.
  *
  * @author Laffini
  *
  */
-public class OrderControllerTests extends AbstractTest {
+public class OrderInterfaceTests extends AbstractTest {
 
     /**
      * Mock order book.
@@ -53,7 +54,7 @@ public class OrderControllerTests extends AbstractTest {
      */
     @InjectMocks
     @Resource
-    private OrderController controller;
+    private OrderInterface controller;
 
     /**
      * Key captor.

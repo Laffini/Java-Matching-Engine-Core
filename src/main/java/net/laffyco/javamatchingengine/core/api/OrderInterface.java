@@ -1,4 +1,4 @@
-package net.laffyco.javamatchingengine;
+package net.laffyco.javamatchingengine.core.api;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,21 +7,16 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
-import net.laffyco.javamatchingengine.engine.Order;
-import net.laffyco.javamatchingengine.engine.OrderBook;
-import net.laffyco.javamatchingengine.engine.Side;
-import net.laffyco.javamatchingengine.engine.Trade;
-import net.laffyco.javamatchingengine.events.OrderAddedEvent;
-import net.laffyco.javamatchingengine.events.OrderMatchedEvent;
+import net.laffyco.javamatchingengine.core.engine.Order;
+import net.laffyco.javamatchingengine.core.engine.OrderBook;
+import net.laffyco.javamatchingengine.core.engine.Side;
+import net.laffyco.javamatchingengine.core.engine.Trade;
+import net.laffyco.javamatchingengine.core.events.OrderAddedEvent;
+import net.laffyco.javamatchingengine.core.events.OrderMatchedEvent;
 
 /**
  * Controller for orders.
@@ -29,9 +24,8 @@ import net.laffyco.javamatchingengine.events.OrderMatchedEvent;
  * @author Laffini
  *
  */
-@RestController
-@RequestMapping("/order")
-public class OrderController {
+@Service
+public class OrderInterface {
 
     /**
      * Order book.
@@ -50,7 +44,6 @@ public class OrderController {
      *
      * @return orders
      */
-    @GetMapping("/")
     public Map<String, List<Order>> getOrders() {
         final Map<String, List<Order>> response = new HashMap<>();
         response.put("buy", this.orderBook.getBuyOrders());
@@ -65,7 +58,6 @@ public class OrderController {
      * @param side
      * @return order (or null if not found)
      */
-    @GetMapping("/{id}")
     public Map<String, Order> getOrder(@PathVariable final String id,
             @RequestParam("side") final Side side) {
         final Map<String, Order> response = new HashMap<>();
@@ -83,7 +75,6 @@ public class OrderController {
      * @param price
      * @return order id
      */
-    @PostMapping("/")
     public Map<String, Object> addOrder(@RequestParam("side") final Side side,
             @RequestParam("amount") final double amount,
             @RequestParam("price") final double price) {
@@ -113,7 +104,6 @@ public class OrderController {
      * @param side
      * @return whether an order was deleted or not
      */
-    @DeleteMapping("/{id}")
     public Map<String, Object> deleteOrder(@PathVariable final String id,
             @RequestParam("side") final Side side) {
         final Map<String, Object> response = new HashMap<>();
@@ -135,7 +125,6 @@ public class OrderController {
      * @param newSide
      * @return whether an order has been updated or not
      */
-    @PutMapping("/{id}")
     public Map<String, Object> updateOrder(@PathVariable final String id,
             @RequestParam("side") final Side side,
             @RequestParam("newAmount") final Optional<Double> newAmount,

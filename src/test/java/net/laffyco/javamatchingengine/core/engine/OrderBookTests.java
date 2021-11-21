@@ -1,4 +1,4 @@
-package net.laffyco.javamatchingengine.engine;
+package net.laffyco.javamatchingengine.core.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -11,6 +11,11 @@ import javax.annotation.Resource;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
+
+import net.laffyco.javamatchingengine.core.engine.Order;
+import net.laffyco.javamatchingengine.core.engine.OrderBook;
+import net.laffyco.javamatchingengine.core.engine.Side;
+import net.laffyco.javamatchingengine.core.engine.Trade;
 
 /**
  * Order book tests.

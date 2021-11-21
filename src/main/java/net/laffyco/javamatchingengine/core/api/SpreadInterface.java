@@ -1,14 +1,12 @@
-package net.laffyco.javamatchingengine;
+package net.laffyco.javamatchingengine.core.api;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Service;
 
-import net.laffyco.javamatchingengine.engine.OrderBook;
+import net.laffyco.javamatchingengine.core.engine.OrderBook;
 
 /**
  * Spread controller.
@@ -16,9 +14,8 @@ import net.laffyco.javamatchingengine.engine.OrderBook;
  * @author Laffini
  *
  */
-@RestController
-@RequestMapping("/spread")
-public class SpreadController {
+@Service
+public class SpreadInterface {
 
     /**
      * Order book.
@@ -31,7 +28,6 @@ public class SpreadController {
      *
      * @return spread
      */
-    @GetMapping("/")
     public Map<String, Double> getSpread() {
         final Map<String, Double> response = new HashMap<>();
         final double spread = this.orderBook.getSpread();

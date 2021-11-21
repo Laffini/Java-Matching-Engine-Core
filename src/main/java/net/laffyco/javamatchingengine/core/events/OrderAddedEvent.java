@@ -1,8 +1,8 @@
-package net.laffyco.javamatchingengine.events;
+package net.laffyco.javamatchingengine.core.events;
 
 import org.springframework.context.ApplicationEvent;
 
-import net.laffyco.javamatchingengine.engine.Order;
+import net.laffyco.javamatchingengine.core.engine.Order;
 
 /**
  * Event for when an order is added to the engine.

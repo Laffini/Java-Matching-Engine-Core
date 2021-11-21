@@ -8,9 +8,9 @@ import java.util.List;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.laffyco.javamatchingengine.engine.Order;
-import net.laffyco.javamatchingengine.engine.OrderBook;
-import net.laffyco.javamatchingengine.engine.Side;
+import net.laffyco.javamatchingengine.core.engine.Order;
+import net.laffyco.javamatchingengine.core.engine.OrderBook;
+import net.laffyco.javamatchingengine.core.engine.Side;
 
 /**
  * Orders feature steps.
