@@ -22,11 +22,11 @@ To use this project, you will need to include the 'core' package as part of your
 @SpringBootApplication(scanBasePackages = "net.laffyco.javamatchingengine.core")
 public class ExampleApp {
 
-	@Autowired
+    @Autowired
     private OrderInterface orderInterface
 
     public static void main(final String[] args) {
-        SpringApplication.run(DbApp.class, args);
+        SpringApplication.run(ExampleApp.class, args);
         System.out.println(this.getOrders());
     }
 
