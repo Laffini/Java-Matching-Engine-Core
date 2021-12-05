@@ -12,7 +12,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import net.laffyco.javamatchingengine.core.api.SpreadInterface;
 import net.laffyco.javamatchingengine.core.engine.OrderBook;
 import test.utils.AbstractTest;
 

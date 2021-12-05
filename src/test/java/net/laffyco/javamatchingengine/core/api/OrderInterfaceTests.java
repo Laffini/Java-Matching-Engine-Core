@@ -20,7 +20,6 @@ import org.mockito.Mockito;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
-import net.laffyco.javamatchingengine.core.api.OrderInterface;
 import net.laffyco.javamatchingengine.core.engine.Order;
 import net.laffyco.javamatchingengine.core.engine.OrderBook;
 import net.laffyco.javamatchingengine.core.engine.Side;
