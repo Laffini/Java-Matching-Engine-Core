@@ -8,10 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
-import net.laffyco.javamatchingengine.core.engine.Order;
-import net.laffyco.javamatchingengine.core.engine.OrderBook;
-import net.laffyco.javamatchingengine.core.engine.Side;
-
 /**
  * Test the cancel order functionality.
  *
