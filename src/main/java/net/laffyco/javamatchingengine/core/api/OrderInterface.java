@@ -8,8 +8,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import net.laffyco.javamatchingengine.core.engine.Order;
 import net.laffyco.javamatchingengine.core.engine.OrderBook;
@@ -58,8 +56,7 @@ public class OrderInterface {
      * @param side
      * @return order (or null if not found)
      */
-    public Map<String, Order> getOrder(@PathVariable final String id,
-            @RequestParam("side") final Side side) {
+    public Map<String, Order> getOrder(final String id, final Side side) {
         final Map<String, Order> response = new HashMap<>();
 
         response.put("order", this.orderBook.findOrder(id, side));
@@ -75,9 +72,8 @@ public class OrderInterface {
      * @param price
      * @return order id
      */
-    public Map<String, Object> addOrder(@RequestParam("side") final Side side,
-            @RequestParam("amount") final double amount,
-            @RequestParam("price") final double price) {
+    public Map<String, Object> addOrder(final Side side, final double amount,
+            final double price) {
         final Map<String, Object> response = new HashMap<>();
 
         final Order order = new Order(amount, price, side);
@@ -104,8 +100,7 @@ public class OrderInterface {
      * @param side
      * @return whether an order was deleted or not
      */
-    public Map<String, Object> deleteOrder(@PathVariable final String id,
-            @RequestParam("side") final Side side) {
+    public Map<String, Object> deleteOrder(final String id, final Side side) {
         final Map<String, Object> response = new HashMap<>();
 
         final boolean result = this.orderBook.cancelOrder(id, side);
@@ -125,11 +120,9 @@ public class OrderInterface {
      * @param newSide
      * @return whether an order has been updated or not
      */
-    public Map<String, Object> updateOrder(@PathVariable final String id,
-            @RequestParam("side") final Side side,
-            @RequestParam("newAmount") final Optional<Double> newAmount,
-            @RequestParam("newPrice") final Optional<Double> newPrice,
-            @RequestParam("newSide") final Optional<Side> newSide) {
+    public Map<String, Object> updateOrder(final String id, final Side side,
+            final Optional<Double> newAmount, final Optional<Double> newPrice,
+            final Optional<Side> newSide) {
 
         final Map<String, Object> response = new HashMap<>();
 
