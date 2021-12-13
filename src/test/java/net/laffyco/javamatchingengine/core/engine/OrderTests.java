@@ -1,6 +1,8 @@
 package net.laffyco.javamatchingengine.core.engine;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.Date;
 
@@ -38,8 +40,10 @@ public class OrderTests extends MatchingEngineTest {
     public void comparePrice() {
         final double price2 = 3;
 
-        final Order order1 = new Order(this.amt, this.price, this.side);
-        final Order order2 = new Order(this.amt, price2, this.side);
+        final Order order1 = new Order.Builder(this.side).atPrice(this.price)
+                .withAmount(this.amt).build();
+        final Order order2 = new Order.Builder(this.side).atPrice(price2)
+                .withAmount(this.amt).build();
 
         // Assert
         assertTrue(order1.compareTo(order2) < 0);
@@ -52,14 +56,55 @@ public class OrderTests extends MatchingEngineTest {
      */
     @Test
     public void compareSamePrice() {
-        final String id = "id";
-        final Order order1 = new Order(this.amt, this.price, id, this.side,
-                new Date(1626518162));
-        final Order order2 = new Order(this.amt, this.price, id, this.side,
-                new Date(1626515150));
+
+        final Date date1 = new Date(1626518162);
+        final Date date2 = new Date(1626515150);
+
+        final Order order1 = new Order.Builder(this.side).withAmount(this.amt)
+                .atPrice(this.price).withDateTime(date1).build();
+
+        final Order order2 = new Order.Builder(this.side).withAmount(this.amt)
+                .atPrice(this.price).withDateTime(date2).build();
 
         // Assert
         assertTrue(order1.compareTo(order2) > 0);
         assertTrue(order2.compareTo(order1) < 0);
+    }
+
+    /**
+     * Test exception is thrown when an invalid price is entered.
+     */
+    @Test
+    @DisplayName("An exception is thrown when an invalid order price is entered")
+    public void invalidPrice() {
+        final double invalidPrice = -1;
+
+        try {
+            new Order.Builder(Side.BUY).atPrice(invalidPrice).build();
+            fail("Should have thrown an exception due to invalid order price");
+        } catch (final IllegalArgumentException e) {
+            assertEquals(e.getMessage(),
+                    "Order prices must be greater than zero");
+
+        }
+    }
+
+    /**
+     * Test exception is thrown when an invalid amount is entered.
+     */
+    @Test
+    @DisplayName("An exception is thrown when an invalid order amount is entered")
+    public void invalidAmount() {
+        final double invalidAmount = -1;
+
+        try {
+            new Order.Builder(Side.BUY).atPrice(this.price)
+                    .withAmount(invalidAmount).build();
+            fail("Should have thrown an exception due to invalid order amount");
+        } catch (final IllegalArgumentException e) {
+            assertEquals(e.getMessage(),
+                    "Order amounts must be greater than zero");
+
+        }
     }
 }
