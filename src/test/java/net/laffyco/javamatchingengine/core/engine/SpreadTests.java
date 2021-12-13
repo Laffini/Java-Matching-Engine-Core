@@ -2,8 +2,6 @@ package net.laffyco.javamatchingengine.core.engine;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Date;
-
 import javax.annotation.Resource;
 
 import org.junit.jupiter.api.DisplayName;
@@ -28,8 +26,10 @@ public class SpreadTests extends MatchingEngineTest {
     @DisplayName("Get the spread when there are two orders")
     void spreadTwoOrders() {
         final Order[] orders = {
-                new Order(2, 2.50, "sellOrder", Side.SELL, new Date()),
-                new Order(2, 2, "buyOrder", Side.BUY, new Date()) };
+                new Order.Builder(Side.SELL).withAmount(2).atPrice(2.5)
+                        .withId("sellOrder").build(),
+                new Order.Builder(Side.BUY).withAmount(2).atPrice(2)
+                        .withId("buyOrder").build() };
         this.addOrders(this.orderBook, orders);
 
         final double expectedSpread = 0.5;
@@ -41,10 +41,14 @@ public class SpreadTests extends MatchingEngineTest {
     @DisplayName("Get the spread when there are multiple orders")
     void spreadMultipleOrders() {
         final Order[] orders = {
-                new Order(2, 2.50, "sellOrder", Side.SELL, new Date()),
-                new Order(2, 2.75, "sellOrder", Side.SELL, new Date()),
-                new Order(2, 2, "buyOrder", Side.BUY, new Date()),
-                new Order(2, 1.5, "secondBuyOrder", Side.BUY, new Date()) };
+                new Order.Builder(Side.SELL).withAmount(2).atPrice(2.5)
+                        .withId("sellOrder").build(),
+                new Order.Builder(Side.SELL).withAmount(2).atPrice(2.75)
+                        .withId("secondSellOrder").build(),
+                new Order.Builder(Side.BUY).withAmount(2).atPrice(2)
+                        .withId("buyOrder").build(),
+                new Order.Builder(Side.BUY).withAmount(2).atPrice(1.5)
+                        .withId("secondBuyOrder").build() };
         this.addOrders(this.orderBook, orders);
 
         final double expectedSpread = 0.5;

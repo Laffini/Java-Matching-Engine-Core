@@ -76,7 +76,8 @@ public class OrderInterface {
             final double price) {
         final Map<String, Object> response = new HashMap<>();
 
-        final Order order = new Order(amount, price, side);
+        final Order order = new Order.Builder(side).withAmount(amount)
+                .atPrice(price).build();
 
         final List<Trade> trades = this.orderBook.process(order);
 

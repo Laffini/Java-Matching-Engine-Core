@@ -1,6 +1,7 @@
 package net.laffyco.javamatchingengine.core.engine;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -37,18 +38,106 @@ public class Order implements Comparable<Order> {
     private final Date dateTimeOfOrder;
 
     /**
-     * Create an instance of Order. Date & time set to now.
+     * Class for building orders.
      *
-     * @param pAmount
-     * @param pPrice
-     * @param pSide
+     * @author Laffini
+     *
      */
-    public Order(final double pAmount, final double pPrice, final Side pSide) {
-        this(pAmount, pPrice, UUID.randomUUID().toString(), pSide, new Date());
+    public static class Builder {
+
+        /**
+         * Size of the order.
+         */
+        private double amount;
+
+        /**
+         * Order price.
+         */
+        private double price;
+
+        /**
+         * Side of the order.
+         */
+        private final Side side;
+
+        /**
+         * Date & Time of order.
+         */
+        private Date dateTimeOfOrder;
+
+        /**
+         * ID.
+         */
+        private String id;
+
+        /**
+         * Builder constructor.
+         *
+         * @param pSide
+         */
+        public Builder(final Side pSide) {
+            this.side = pSide;
+        }
+
+        /**
+         * The order's amount.
+         *
+         * @param amt
+         * @return The builder.
+         */
+        public Builder withAmount(final double amt) {
+            this.amount = amt;
+            return this;
+        }
+
+        /**
+         * The order's price.
+         *
+         * @param pPrice
+         * @return The builder.
+         */
+        public Builder atPrice(final double pPrice) {
+            this.price = pPrice;
+            return this;
+        }
+
+        /**
+         * The order's ID.
+         *
+         * @param pId
+         * @return The builder.
+         */
+        public Builder withId(final String pId) {
+            this.id = pId;
+            return this;
+        }
+
+        /**
+         * The order's date time stamp.
+         *
+         * @param dateTime
+         * @return The builder.
+         */
+        public Builder withDateTime(final Date dateTime) {
+            this.dateTimeOfOrder = dateTime;
+            return this;
+        }
+
+        /**
+         * Build an order.
+         *
+         * @return The new order.
+         */
+        public Order build() {
+            return new Order(this.amount, this.price,
+                    Optional.ofNullable(this.id), this.side,
+                    Optional.ofNullable(this.dateTimeOfOrder));
+        }
+
     }
 
     /**
-     * Create an instance of Order.
+     * Create an instance of Order. Private so that the builder is used.
      *
      * @param pAmount
      * @param pPrice
@@ -56,14 +145,23 @@ public class Order implements Comparable<Order> {
      * @param pSide
      * @param pDateTimeOfOrder
      */
-    public Order(final double pAmount, final double pPrice, final String pId,
-            final Side pSide, final Date pDateTimeOfOrder) {
+    private Order(final double pAmount, final double pPrice,
+            final Optional<String> pId, final Side pSide,
+            final Optional<Date> pDateTimeOfOrder) {
+
+        if (pPrice <= 0) {
+            throw new IllegalArgumentException(
+                    "Order prices must be greater than zero");
+        } else if (pAmount <= 0) {
+            throw new IllegalArgumentException(
+                    "Order amounts must be greater than zero");
+        }
 
         this.amount = pAmount;
         this.price = pPrice;
-        this.id = pId;
+        this.id = pId.orElse(UUID.randomUUID().toString());
         this.side = pSide;
-        this.dateTimeOfOrder = pDateTimeOfOrder;
+        this.dateTimeOfOrder = pDateTimeOfOrder.orElse(new Date());
     }
 
     /**

@@ -47,7 +47,8 @@ public class CancelOrderTests extends MatchingEngineTest {
         final double price = 1;
         final Side side = Side.BUY;
         // Create order.
-        final Order order = new Order(amt, price, side);
+        final Order order = new Order.Builder(side).atPrice(price)
+                .withAmount(amt).build();
 
         // Process order
         this.orderBook.process(order);
@@ -72,7 +73,8 @@ public class CancelOrderTests extends MatchingEngineTest {
         final double price = 1;
         final Side side = Side.BUY;
         // Create order.
-        final Order order = new Order(amt, price, side);
+        final Order order = new Order.Builder(side).atPrice(price)
+                .withAmount(amt).build();
 
         // Process order
         this.orderBook.process(order);
@@ -97,7 +99,8 @@ public class CancelOrderTests extends MatchingEngineTest {
         final double price = 1;
         final Side side = Side.SELL;
         // Create order.
-        final Order order = new Order(amt, price, side);
+        final Order order = new Order.Builder(side).atPrice(price)
+                .withAmount(amt).build();
 
         // Process order
         this.orderBook.process(order);
@@ -121,7 +124,8 @@ public class CancelOrderTests extends MatchingEngineTest {
         final double price = 1;
         final Side side = Side.SELL;
         // Create order.
-        final Order order = new Order(amt, price, side);
+        final Order order = new Order.Builder(side).atPrice(price)
+                .withAmount(amt).build();
 
         // Process order
         this.orderBook.process(order);

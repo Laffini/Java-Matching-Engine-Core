@@ -12,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 
-
 /**
  * Order book tests.
  *
@@ -22,10 +21,23 @@ import org.mockito.InjectMocks;
 public class OrderBookTests extends MatchingEngineTest {
 
     /**
+     * Test amount.
+     */
+    private final double amount = 3;
+
+    /**
+     * Test price.
+     */
+    private final double price = 2;
+
+    /**
      * Array of orders.
      */
-    private final Order[] orders = {new Order(3, 2, Side.BUY),
-            new Order(3, 2, Side.SELL)};
+    private final Order[] orders = {
+            new Order.Builder(Side.BUY).withAmount(this.amount)
+                    .atPrice(this.price).build(),
+            new Order.Builder(Side.SELL).withAmount(this.amount)
+                    .atPrice(this.price).build() };
 
     /**
      * Test OrderBook.

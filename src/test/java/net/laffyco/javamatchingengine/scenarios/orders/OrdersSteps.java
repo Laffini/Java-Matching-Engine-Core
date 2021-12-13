@@ -46,7 +46,8 @@ public class OrdersSteps {
         final double price = 25.59;
         final Side side = Side.BUY;
 
-        this.order = new Order(amount, price, side);
+        this.order = new Order.Builder(side).withAmount(amount).atPrice(price)
+                .build();
         this.orderBook.process(this.order);
     }
 
