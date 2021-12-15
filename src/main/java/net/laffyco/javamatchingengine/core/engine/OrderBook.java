@@ -34,8 +34,8 @@ public class OrderBook {
      * Constructor.
      */
     public OrderBook() {
-        this.buyOrders = new ArrayList<Order>();
-        this.sellOrders = new ArrayList<Order>();
+        this.buyOrders = new ArrayList<>();
+        this.sellOrders = new ArrayList<>();
     }
 
     /**
@@ -60,7 +60,7 @@ public class OrderBook {
      * @return trades
      */
     private synchronized List<Trade> processLimitBuy(final Order order) {
-        final ArrayList<Trade> trades = new ArrayList<Trade>();
+        final ArrayList<Trade> trades = new ArrayList<>();
 
         final int n = this.sellOrders.size();
 
@@ -118,7 +118,7 @@ public class OrderBook {
      */
     private synchronized List<Trade> processLimitSell(final Order order) {
 
-        final ArrayList<Trade> trades = new ArrayList<Trade>();
+        final ArrayList<Trade> trades = new ArrayList<>();
 
         final int n = this.buyOrders.size();
 
@@ -200,13 +200,8 @@ public class OrderBook {
         } else {
             toSearch = this.sellOrders;
         }
-        for (int i = 0; i < toSearch.size(); i++) {
-            final Order current = toSearch.get(i);
-            if (current.getId().equals(id)) {
-                return current;
-            }
-        }
-        return null;
+        return toSearch.stream().filter(order -> order.getId().equals(id))
+                .findFirst().orElse(null);
     }
 
     /**
