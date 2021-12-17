@@ -23,7 +23,7 @@ import net.laffyco.javamatchingengine.core.events.OrderMatchedEvent;
  *
  */
 @Service
-public class OrderInterface {
+public class OrderInterface implements IOrderInterface {
 
     /**
      * Order book.
@@ -37,26 +37,16 @@ public class OrderInterface {
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;
 
-    /**
-     * Retrieve orders.
-     *
-     * @return orders
-     */
-    public Map<String, List<Order>> getOrders() {
+    @Override
+    public final Map<String, List<Order>> getOrders() {
         final Map<String, List<Order>> response = new HashMap<>();
         response.put("buy", this.orderBook.getBuyOrders());
         response.put("sell", this.orderBook.getSellOrders());
         return response;
     }
 
-    /**
-     * Retrieve an order by ID.
-     *
-     * @param id
-     * @param side
-     * @return order (or null if not found)
-     */
-    public Map<String, Order> getOrder(final String id, final Side side) {
+    @Override
+    public final Map<String, Order> getOrder(final String id, final Side side) {
         final Map<String, Order> response = new HashMap<>();
 
         response.put("order", this.orderBook.findOrder(id, side));
@@ -64,14 +54,7 @@ public class OrderInterface {
         return response;
     }
 
-    /**
-     * Add an order.
-     *
-     * @param side
-     * @param amount
-     * @param price
-     * @return order id
-     */
+    @Override
     public Map<String, Object> addOrder(final Side side, final double amount,
             final double price) {
         final Map<String, Object> response = new HashMap<>();
@@ -94,14 +77,9 @@ public class OrderInterface {
         return response;
     }
 
-    /**
-     * Delete an order.
-     *
-     * @param id
-     * @param side
-     * @return whether an order was deleted or not
-     */
-    public Map<String, Object> deleteOrder(final String id, final Side side) {
+    @Override
+    public final Map<String, Object> deleteOrder(final String id,
+            final Side side) {
         final Map<String, Object> response = new HashMap<>();
 
         final boolean result = this.orderBook.cancelOrder(id, side);
@@ -111,19 +89,10 @@ public class OrderInterface {
         return response;
     }
 
-    /**
-     * Update an order.
-     *
-     * @param id
-     * @param side
-     * @param newAmount
-     * @param newPrice
-     * @param newSide
-     * @return whether an order has been updated or not
-     */
-    public Map<String, Object> updateOrder(final String id, final Side side,
-            final Optional<Double> newAmount, final Optional<Double> newPrice,
-            final Optional<Side> newSide) {
+    @Override
+    public final Map<String, Object> updateOrder(final String id,
+            final Side side, final Optional<Double> newAmount,
+            final Optional<Double> newPrice, final Optional<Side> newSide) {
 
         final Map<String, Object> response = new HashMap<>();
 

@@ -15,7 +15,7 @@ import net.laffyco.javamatchingengine.core.engine.OrderBook;
  *
  */
 @Service
-public class SpreadInterface {
+public class SpreadInterface implements ISpreadInterface {
 
     /**
      * Order book.
@@ -23,12 +23,8 @@ public class SpreadInterface {
     @Autowired
     private OrderBook orderBook;
 
-    /**
-     * Retrieve the order book spread.
-     *
-     * @return spread
-     */
-    public Map<String, Double> getSpread() {
+    @Override
+    public final Map<String, Double> getSpread() {
         final Map<String, Double> response = new HashMap<>();
         final double spread = this.orderBook.getSpread();
         response.put("spread", spread);
