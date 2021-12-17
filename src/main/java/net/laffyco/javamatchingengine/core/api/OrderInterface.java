@@ -55,8 +55,8 @@ public class OrderInterface implements IOrderInterface {
     }
 
     @Override
-    public Map<String, Object> addOrder(final Side side, final double amount,
-            final double price) {
+    public final Map<String, Object> addOrder(final Side side,
+            final double amount, final double price) {
         final Map<String, Object> response = new HashMap<>();
 
         final Order order = new Order.Builder(side).withAmount(amount)
