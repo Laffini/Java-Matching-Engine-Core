@@ -23,11 +23,11 @@ To use this project, you will need to include the 'core' package as part of your
 public class ExampleApp {
 
     @Autowired
-    private OrderInterface orderInterface
+    private IOrderInterface orderInterface
 
     public static void main(final String[] args) {
         SpringApplication.run(ExampleApp.class, args);
-        System.out.println(this.getOrders());
+        System.out.println(this.orderInterface.getOrders());
     }
 
 }
